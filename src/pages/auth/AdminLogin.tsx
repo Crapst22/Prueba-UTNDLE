@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '@/store/authStore'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 interface LoginForm {
   email: string
@@ -10,13 +11,17 @@ interface LoginForm {
 }
 
 export function AdminLogin() {
-  const { login, user, cargando, error } = useAuthStore()
+  const { login, user, verificando, enviando, error, checkSession } = useAuthStore()
   const navigate = useNavigate()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginForm>()
+
+  useEffect(() => {
+    checkSession()
+  }, [checkSession])
 
   useEffect(() => {
     if (user) {
@@ -28,16 +33,29 @@ export function AdminLogin() {
     await login(data.email, data.password)
   }
 
+  if (verificando) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
+        <LoadingSpinner size="lg" text="Verificando sesión..." />
+      </div>
+    )
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div
+      className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: 'url(/fondo.jpg)' }}
+    >
+      <div className="absolute inset-0 bg-black/60" />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm"
+        className="w-full max-w-sm relative z-10"
       >
-        <div className="card p-8">
+        <div className="bg-dark-900/70 backdrop-blur-xl border border-dark-600/50 rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold gradient-text">UTNDLE</h1>
+            <h1 className="text-3xl font-bold gradient-text">UTNDLE</h1>
             <p className="text-sm text-dark-400 mt-1">Panel de Administración</p>
           </div>
 
@@ -98,10 +116,10 @@ export function AdminLogin() {
 
             <button
               type="submit"
-              disabled={cargando}
+              disabled={enviando}
               className="btn-primary w-full flex items-center justify-center gap-2"
             >
-              {cargando ? (
+              {enviando ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   Ingresando...

@@ -1,10 +1,11 @@
 import { create } from 'zustand'
-import { supabase } from '@/services/supabase'
+import { supabase, supabaseConfigurado } from '@/services/supabase'
 import type { User } from '@supabase/supabase-js'
 
 interface AuthState {
   user: User | null
-  cargando: boolean
+  verificando: boolean
+  enviando: boolean
   error: string | null
 
   login: (email: string, password: string) => Promise<void>
@@ -14,38 +15,48 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  cargando: true,
+  verificando: true,
+  enviando: false,
   error: null,
 
   login: async (email: string, password: string) => {
-    set({ cargando: true, error: null })
+    set({ enviando: true, error: null })
+
+    if (!supabaseConfigurado) {
+      set({
+        enviando: false,
+        error: 'Supabase no está configurado. Revisá el archivo .env con las credenciales.',
+      })
+      return
+    }
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       if (error) throw error
-      set({ user: data.user, cargando: false })
+      set({ user: data.user, enviando: false })
     } catch (err) {
       set({
-        cargando: false,
+        enviando: false,
         error: err instanceof Error ? err.message : 'Error al iniciar sesión',
       })
     }
   },
 
   logout: async () => {
-    set({ cargando: true })
+    set({ enviando: true })
     await supabase.auth.signOut()
-    set({ user: null, cargando: false, error: null })
+    set({ user: null, enviando: false, error: null })
   },
 
   checkSession: async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      set({ user: session?.user || null, cargando: false })
+      set({ user: session?.user || null, verificando: false })
     } catch {
-      set({ user: null, cargando: false })
+      set({ user: null, verificando: false })
     }
   },
 }))

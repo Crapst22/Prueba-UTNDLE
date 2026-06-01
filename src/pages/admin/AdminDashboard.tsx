@@ -9,7 +9,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { Profesor } from '@/types'
 
 export function AdminDashboard() {
-  const { user, cargando: authCargando, logout, checkSession } = useAuthStore()
+  const { user, verificando, logout, checkSession } = useAuthStore()
   const navigate = useNavigate()
   const [profesores, setProfesores] = useState<Profesor[]>([])
   const [cargando, setCargando] = useState(true)
@@ -21,10 +21,10 @@ export function AdminDashboard() {
   }, [checkSession])
 
   useEffect(() => {
-    if (!authCargando && !user) {
+    if (!verificando && !user) {
       navigate('/admin/login')
     }
-  }, [user, authCargando, navigate])
+  }, [user, verificando, navigate])
 
   const cargarProfesores = useCallback(async () => {
     try {
@@ -59,10 +59,13 @@ export function AdminDashboard() {
     navigate('/admin/login')
   }
 
-  if (authCargando) {
+  if (verificando) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" text="Verificando sesión..." />
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10">
+          <LoadingSpinner size="lg" text="Verificando sesión..." />
+        </div>
       </div>
     )
   }
@@ -70,8 +73,9 @@ export function AdminDashboard() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-dark-950">
-      <header className="border-b border-dark-700 bg-dark-900/80 backdrop-blur-md sticky top-0 z-40">
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
+      <div className="fixed inset-0 bg-black/70" />
+      <header className="relative z-40 border-b border-dark-700/50 bg-dark-900/80 backdrop-blur-md sticky top-0">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <a href="/" className="text-sm text-dark-400 hover:text-primary-400 transition-colors">
@@ -97,7 +101,7 @@ export function AdminDashboard() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6">
+      <main className="max-w-6xl mx-auto px-4 py-6 relative z-10">
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
