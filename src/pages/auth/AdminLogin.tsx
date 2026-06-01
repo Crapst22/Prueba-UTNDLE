@@ -35,18 +35,20 @@ export function AdminLogin() {
 
   if (verificando) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
-        <LoadingSpinner size="lg" text="Verificando sesión..." />
+      <div className="min-h-screen flex items-center justify-center relative">
+        <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
+        <div className="fixed inset-0 bg-black/60" />
+        <div className="relative z-10">
+          <LoadingSpinner size="lg" text="Verificando sesión..." />
+        </div>
       </div>
     )
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: 'url(/fondo.jpg)' }}
-    >
-      <div className="absolute inset-0 bg-black/60" />
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
+      <div className="fixed inset-0 bg-black/60" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

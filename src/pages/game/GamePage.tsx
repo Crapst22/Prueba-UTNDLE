@@ -19,10 +19,15 @@ export function GamePage() {
     }
   }, [partida, iniciarPartida])
 
+  const fondo = (
+    <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
+  )
+
   if (cargando) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
-        <div className="absolute inset-0 bg-black/60" />
+      <div className="min-h-screen flex items-center justify-center relative">
+        {fondo}
+        <div className="fixed inset-0 bg-black/60" />
         <div className="relative z-10">
           <LoadingSpinner size="lg" text="Cargando partida..." />
         </div>
@@ -32,8 +37,9 @@ export function GamePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
-        <div className="absolute inset-0 bg-black/60" />
+      <div className="min-h-screen flex items-center justify-center relative">
+        {fondo}
+        <div className="fixed inset-0 bg-black/60" />
         <div className="relative z-10 text-center">
           <p className="text-red-400 mb-4">{error}</p>
           <button onClick={iniciarPartida} className="btn-primary">
@@ -45,7 +51,8 @@ export function GamePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
+    <div className="min-h-screen flex flex-col relative">
+      {fondo}
       <div className="fixed inset-0 bg-black/70 pointer-events-none" />
       <div className="relative z-10 flex flex-col min-h-screen">
         <TopBar />

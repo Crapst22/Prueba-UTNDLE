@@ -103,8 +103,9 @@ export function AdminConfiguracion() {
 
   if (verificando) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
-        <div className="absolute inset-0 bg-black/60" />
+      <div className="min-h-screen flex items-center justify-center relative">
+        <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
+        <div className="fixed inset-0 bg-black/60" />
         <div className="relative z-10">
           <LoadingSpinner size="lg" text="Verificando sesión..." />
         </div>
@@ -115,7 +116,8 @@ export function AdminConfiguracion() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }}>
+    <div className="min-h-screen relative">
+      <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
       <div className="fixed inset-0 bg-black/70 pointer-events-none" />
 
       <header className="relative z-40 border-b border-dark-700/50 bg-dark-900/80 backdrop-blur-md sticky top-0">

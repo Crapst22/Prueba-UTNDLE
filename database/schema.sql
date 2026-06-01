@@ -125,20 +125,36 @@ CREATE POLICY "Lectura pública - profesor_presencialidad" ON profesor_presencia
   FOR SELECT USING (true);
 
 -- Solo admin autenticado puede modificar
-CREATE POLICY "Escritura admin - profesores" ON profesores
-  FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Insert admin - profesores" ON profesores
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Update admin - profesores" ON profesores
+  FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Delete admin - profesores" ON profesores
+  FOR DELETE USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Escritura admin - presencialidades" ON presencialidades
-  FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Insert admin - presencialidades" ON presencialidades
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Update admin - presencialidades" ON presencialidades
+  FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Delete admin - presencialidades" ON presencialidades
+  FOR DELETE USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Escritura admin - catedras" ON catedras
-  FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Insert admin - catedras" ON catedras
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Update admin - catedras" ON catedras
+  FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Delete admin - catedras" ON catedras
+  FOR DELETE USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Escritura admin - profesor_catedra" ON profesor_catedra
-  FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Insert admin - profesor_catedra" ON profesor_catedra
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Delete admin - profesor_catedra" ON profesor_catedra
+  FOR DELETE USING (auth.role() = 'authenticated');
 
-CREATE POLICY "Escritura admin - profesor_presencialidad" ON profesor_presencialidad
-  FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Insert admin - profesor_presencialidad" ON profesor_presencialidad
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Delete admin - profesor_presencialidad" ON profesor_presencialidad
+  FOR DELETE USING (auth.role() = 'authenticated');
 
 -- 6. FUNCIÓN PARA SELECCIÓN DIARIA DETERMINÍSTICA
 -- (Se usa desde la aplicación con hash de fecha)
