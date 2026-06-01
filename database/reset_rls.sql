@@ -3,7 +3,7 @@
 -- Ejecutar esto en SQL Editor de Supabase
 -- ============================================
 
--- 1. Eliminar TODAS las políticas existentes de estas tablas
+-- 1. Eliminar TODAS las políticas existentes (tablas + storage)
 DO $$
 DECLARE
   pol RECORD;
@@ -14,6 +14,14 @@ BEGIN
     AND tablename IN ('profesores','presencialidades','catedras','profesor_catedra','profesor_presencialidad')
   ) LOOP
     EXECUTE format('DROP POLICY IF EXISTS %I ON %I', pol.policyname, pol.tablename);
+  END LOOP;
+
+  FOR pol IN (
+    SELECT policyname FROM pg_policies
+    WHERE schemaname = 'storage' AND tablename = 'objects'
+    AND policyname IN ('Lectura pública - storage', 'Insertar archivos - admin', 'Actualizar archivos - admin', 'Eliminar archivos - admin')
+  ) LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON storage.objects', pol.policyname);
   END LOOP;
 END $$;
 
@@ -90,8 +98,37 @@ CREATE POLICY "Insert admin - profesor_presencialidad" ON profesor_presencialida
 CREATE POLICY "Delete admin - profesor_presencialidad" ON profesor_presencialidad
   FOR DELETE USING (auth.uid() IS NOT NULL);
 
--- 5. Verificación: mostrar políticas creadas
-SELECT tablename, policyname, permissive, cmd, qual, with_check
+-- 5. Políticas de STORAGE buckets
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+-- Los buckets deben existir: profesores-fotos, profesores-audios, profesores-imagenes-pista
+-- Cualquier usuario puede leer archivos
+CREATE POLICY "Lectura pública - storage" ON storage.objects
+  FOR SELECT USING (true);
+
+-- Solo admin autenticado puede subir/modificar/eliminar en los buckets del sistema
+CREATE POLICY "Insertar archivos - admin" ON storage.objects
+  FOR INSERT WITH CHECK (
+    auth.uid() IS NOT NULL
+    AND bucket_id IN ('profesores-fotos', 'profesores-audios', 'profesores-imagenes-pista')
+  );
+
+CREATE POLICY "Actualizar archivos - admin" ON storage.objects
+  FOR UPDATE USING (
+    auth.uid() IS NOT NULL
+    AND bucket_id IN ('profesores-fotos', 'profesores-audios', 'profesores-imagenes-pista')
+  ) WITH CHECK (
+    auth.uid() IS NOT NULL
+    AND bucket_id IN ('profesores-fotos', 'profesores-audios', 'profesores-imagenes-pista')
+  );
+
+CREATE POLICY "Eliminar archivos - admin" ON storage.objects
+  FOR DELETE USING (
+    auth.uid() IS NOT NULL
+    AND bucket_id IN ('profesores-fotos', 'profesores-audios', 'profesores-imagenes-pista')
+  );
+
+-- 6. Verificación: mostrar TODAS las políticas creadas (tablas + storage)
+SELECT schemaname, tablename, policyname, permissive, cmd, qual, with_check
 FROM pg_policies
-WHERE schemaname = 'public'
-ORDER BY tablename, cmd;
+WHERE schemaname IN ('public', 'storage')
+ORDER BY schemaname, tablename, cmd;

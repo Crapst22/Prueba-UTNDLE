@@ -170,13 +170,62 @@ CREATE POLICY "Insert admin - profesor_presencialidad" ON profesor_presencialida
 CREATE POLICY "Delete admin - profesor_presencialidad" ON profesor_presencialidad
   FOR DELETE USING (auth.uid() IS NOT NULL);
 
--- 6. FUNCIÓN PARA SELECCIÓN DIARIA DETERMINÍSTICA
+-- 6. RLS PARA STORAGE (buckets de archivos)
+ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+-- Los buckets deben crearse manualmente desde Supabase Dashboard:
+-- Storage -> Create bucket -> nombre: profesores-fotos (público)
+-- Storage -> Create bucket -> nombre: profesores-audios (público)
+-- Storage -> Create bucket -> nombre: profesores-imagenes-pista (público)
+-- Luego ejecutar las siguientes políticas:
+
+-- Eliminar políticas existentes de storage.objects si las hay
+DO $$
+DECLARE
+  pol RECORD;
+BEGIN
+  FOR pol IN (
+    SELECT policyname FROM pg_policies
+    WHERE schemaname = 'storage' AND tablename = 'objects'
+  ) LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON storage.objects', pol.policyname);
+  END LOOP;
+END $$;
+
+-- Permitir lectura pública de todos los archivos
+CREATE POLICY "Lectura pública - storage" ON storage.objects
+  FOR SELECT USING (true);
+
+-- Permitir subida de archivos solo a admin autenticado
+CREATE POLICY "Insertar archivos - admin" ON storage.objects
+  FOR INSERT WITH CHECK (
+    auth.uid() IS NOT NULL
+    AND bucket_id IN ('profesores-fotos', 'profesores-audios', 'profesores-imagenes-pista')
+  );
+
+-- Permitir actualizar archivos solo a admin autenticado
+CREATE POLICY "Actualizar archivos - admin" ON storage.objects
+  FOR UPDATE USING (
+    auth.uid() IS NOT NULL
+    AND bucket_id IN ('profesores-fotos', 'profesores-audios', 'profesores-imagenes-pista')
+  ) WITH CHECK (
+    auth.uid() IS NOT NULL
+    AND bucket_id IN ('profesores-fotos', 'profesores-audios', 'profesores-imagenes-pista')
+  );
+
+-- Permitir eliminar archivos solo a admin autenticado
+CREATE POLICY "Eliminar archivos - admin" ON storage.objects
+  FOR DELETE USING (
+    auth.uid() IS NOT NULL
+    AND bucket_id IN ('profesores-fotos', 'profesores-audios', 'profesores-imagenes-pista')
+  );
+
+-- 7. FUNCIÓN PARA SELECCIÓN DIARIA DETERMINÍSTICA
 -- (Se usa desde la aplicación con hash de fecha)
 
 -- ============================================
 -- INSTRUCCIONES POST-CREACIÓN:
 -- 1. Ejecutar este script en SQL Editor de Supabase
--- 2. Crear buckets de Storage:
+-- 2. Crear buckets de Storage desde el Dashboard:
 --    - profesores-fotos (público)
 --    - profesores-audios (público)
 --    - profesores-imagenes-pista (público)
