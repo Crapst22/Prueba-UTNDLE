@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion } from '@/types'
 import { obtenerProfesorDelDia, obtenerProfesor, obtenerProfesorAleatorio } from '@/services/profesores'
+import { calcularEdad } from '@/utils/edad'
 
 function obtenerFechaKey(): string {
   return new Date().toISOString().split('T')[0]
@@ -80,8 +81,10 @@ function compararProfesores(buscado: Profesor, correcto: Profesor): ResultadoCom
     if (presCoincide) resultado.presencialidad = 'amarillo'
   }
 
-  if (buscado.edad > correcto.edad) resultado.edad = 'bajada'
-  else if (buscado.edad < correcto.edad) resultado.edad = 'subida'
+  const edadBuscado = calcularEdad(buscado.fecha_nacimiento)
+  const edadCorrecto = calcularEdad(correcto.fecha_nacimiento)
+  if (edadBuscado > edadCorrecto) resultado.edad = 'bajada'
+  else if (edadBuscado < edadCorrecto) resultado.edad = 'subida'
   else resultado.edad = 'verde'
 
   resultado.jefe_catedra = buscado.jefe_catedra === correcto.jefe_catedra ? 'verde' : 'rojo'

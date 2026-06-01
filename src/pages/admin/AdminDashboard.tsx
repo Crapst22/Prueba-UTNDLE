@@ -8,6 +8,7 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { Profesor } from '@/types'
+import { calcularEdad } from '@/utils/edad'
 
 export function AdminDashboard() {
   const { user, verificando, logout, checkSession } = useAuthStore()
@@ -177,7 +178,7 @@ export function AdminDashboard() {
                       </td>
                       <td className="px-4 py-3 font-medium text-sm">{profesor.nombre}</td>
                       <td className="px-4 py-3 text-center font-mono text-sm">{profesor.legajo}</td>
-                      <td className="px-4 py-3 text-center text-sm">{profesor.edad}</td>
+                      <td className="px-4 py-3 text-center text-sm">{calcularEdad(profesor.fecha_nacimiento)}</td>
                       <td className="px-4 py-3 text-center text-sm">{profesor.catedras.length}</td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">

@@ -4,7 +4,7 @@ export interface Profesor {
   foto_url: string
   audio_pista_url: string
   imagen_pista_url: string
-  edad: number
+  fecha_nacimiento: string
   legajo: number
   jefe_catedra: boolean
   created_at: string
@@ -73,7 +73,7 @@ export interface ProfesorFormData {
   foto: File | null
   audio_pista: File | null
   imagen_pista: File | null
-  edad: number
+  fecha_nacimiento: string
   legajo: number
   jefe_catedra: boolean
   presencialidad_ids: string[]
@@ -85,7 +85,7 @@ export interface ProfesorCreateData {
   foto_url: string
   audio_pista_url: string
   imagen_pista_url: string
-  edad: number
+  fecha_nacimiento: string
   legajo: number
   jefe_catedra: boolean
   presencialidad_ids: string[]

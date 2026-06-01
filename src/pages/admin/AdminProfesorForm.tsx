@@ -17,7 +17,7 @@ import type { Presencialidad, Catedra } from '@/types'
 
 interface ProfesorFormValues {
   nombre: string
-  edad: number
+  fecha_nacimiento: string
   legajo: number
   jefe_catedra: boolean
   presencialidad_ids: string[]
@@ -50,7 +50,7 @@ export function AdminProfesorForm() {
   } = useForm<ProfesorFormValues>({
     defaultValues: {
       nombre: '',
-      edad: 30,
+      fecha_nacimiento: '',
       legajo: 0,
       jefe_catedra: false,
       presencialidad_ids: [],
@@ -83,7 +83,7 @@ export function AdminProfesorForm() {
           if (profesor) {
             reset({
               nombre: profesor.nombre,
-              edad: profesor.edad,
+              fecha_nacimiento: profesor.fecha_nacimiento,
               legajo: profesor.legajo,
               jefe_catedra: profesor.jefe_catedra,
               presencialidad_ids: profesor.presencialidades.map((p) => p.id),
@@ -159,7 +159,7 @@ export function AdminProfesorForm() {
           foto_url,
           audio_pista_url,
           imagen_pista_url,
-          edad: data.edad,
+          fecha_nacimiento: data.fecha_nacimiento,
           legajo: data.legajo,
           jefe_catedra: data.jefe_catedra,
           presencialidad_ids: data.presencialidad_ids,
@@ -171,7 +171,7 @@ export function AdminProfesorForm() {
           foto_url,
           audio_pista_url,
           imagen_pista_url,
-          edad: data.edad,
+          fecha_nacimiento: data.fecha_nacimiento,
           legajo: data.legajo,
           jefe_catedra: data.jefe_catedra,
           presencialidad_ids: data.presencialidad_ids,
@@ -244,17 +244,26 @@ export function AdminProfesorForm() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-dark-300 mb-1">Edad</label>
+                <label className="block text-sm font-medium text-dark-300 mb-1">Fecha de nacimiento</label>
                 <input
-                  type="number"
+                  type="date"
                   className="input w-full"
-                  {...register('edad', {
+                  {...register('fecha_nacimiento', {
                     required: 'Obligatorio',
-                    min: { value: 18, message: 'Mínimo 18' },
-                    valueAsNumber: true,
+                    validate: (value) => {
+                      if (!value) return 'Obligatorio'
+                      const fecha = new Date(value)
+                      const hoy = new Date()
+                      let edad = hoy.getFullYear() - fecha.getFullYear()
+                      const mes = hoy.getMonth() - fecha.getMonth()
+                      if (mes < 0 || (mes === 0 && hoy.getDate() < fecha.getDate())) {
+                        edad--
+                      }
+                      return edad >= 18 || 'Debe tener al menos 18 años'
+                    },
                   })}
                 />
-                {errors.edad && <p className="text-red-400 text-xs mt-1">{errors.edad.message}</p>}
+                {errors.fecha_nacimiento && <p className="text-red-400 text-xs mt-1">{errors.fecha_nacimiento.message}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-dark-300 mb-1">Legajo</label>

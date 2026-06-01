@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS profesores (
   foto_url TEXT NOT NULL DEFAULT '',
   audio_pista_url TEXT NOT NULL DEFAULT '',
   imagen_pista_url TEXT NOT NULL DEFAULT '',
-  edad INTEGER NOT NULL,
+  fecha_nacimiento DATE NOT NULL,
   legajo INTEGER NOT NULL UNIQUE,
   jefe_catedra BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()

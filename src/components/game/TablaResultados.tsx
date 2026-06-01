@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 import { ResultadoCelda } from '@/components/ui/ResultadoCelda'
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
+import { calcularEdad } from '@/utils/edad'
 
 function IconoProfesor() {
   return (
@@ -136,7 +137,7 @@ export function TablaResultados() {
 
               <ResultadoCelda
                 color={intento.resultado.edad}
-                valor={String(intento.profesor.edad)}
+                valor={String(calcularEdad(intento.profesor.fecha_nacimiento))}
                 delay={rowDelay + 0.75}
               />
             </motion.div>
