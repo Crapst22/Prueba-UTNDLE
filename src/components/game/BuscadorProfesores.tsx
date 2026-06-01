@@ -73,6 +73,7 @@ export function BuscadorProfesores() {
 
   const handleSelect = (profesor: Profesor) => {
     setTermino('')
+    setResultados([])
     setSeleccionado(true)
     setMostrarDropdown(false)
     realizarIntento(profesor)
@@ -108,7 +109,7 @@ export function BuscadorProfesores() {
             type="text"
             value={termino}
             onChange={handleInputChange}
-            onFocus={() => resultados.length > 0 && setMostrarDropdown(true)}
+            onFocus={() => termino.length > 0 && resultados.length > 0 && setMostrarDropdown(true)}
             placeholder="Escribí el nombre del profesor..."
             disabled={deshabilitado}
             className={`input w-full pl-10 pr-4 py-3 text-sm ${deshabilitado ? 'opacity-50 cursor-not-allowed' : ''}`}

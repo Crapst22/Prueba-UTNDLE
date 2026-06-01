@@ -12,7 +12,7 @@ export function TopBar() {
       {user && (
         <a
           href="/admin"
-          className="fixed top-3 left-3 z-50 text-xs text-white/60 hover:text-yellow-300 transition-colors px-2 py-1 rounded bg-white/5 backdrop-blur-sm"
+          className="fixed top-3 left-3 z-50 text-xs text-white/80 hover:text-yellow-300 transition-colors px-2 py-1 rounded bg-white/10 backdrop-blur-sm"
         >
           Admin
         </a>
@@ -28,7 +28,7 @@ export function TopBar() {
             UTNDLE
           </h1>
         </div>
-        <p className="text-sm text-white/70 font-medium text-shadow">
+        <p className="text-sm text-white/85 font-medium text-shadow">
           Facultad Regional de Villa María
         </p>
 
