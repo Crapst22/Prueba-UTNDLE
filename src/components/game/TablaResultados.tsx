@@ -52,6 +52,15 @@ function IconoEdad() {
   )
 }
 
+const columnas = [
+  { id: 'profesor', label: 'Profesor', icono: <IconoProfesor /> },
+  { id: 'catedras', label: 'Cátedra/s', icono: <IconoCatedra /> },
+  { id: 'presencialidad', label: 'Presencialidad', icono: <IconoPresencialidad /> },
+  { id: 'legajo', label: 'Legajo', icono: <IconoLegajo /> },
+  { id: 'jefe', label: 'Jefe', icono: <IconoJefe /> },
+  { id: 'edad', label: 'Edad', icono: <IconoEdad /> },
+]
+
 export function TablaResultados() {
   const { partida } = useGameStore()
   const intentos = partida?.intentos ? [...partida.intentos].reverse() : []
@@ -67,85 +76,79 @@ export function TablaResultados() {
   }
 
   return (
-    <div className="px-4 max-w-4xl mx-auto w-full mt-4 space-y-3">
-      {intentos.map((intento, index) => {
-        const rowDelay = (intentos.length - 1 - index) * 0.08
+    <div className="px-4 max-w-4xl mx-auto w-full mt-4">
+      <div className="grid grid-cols-6 gap-2 mb-2">
+        {columnas.map((col) => (
+          <div key={col.id} className="flex items-center justify-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-dark-400/70">
+            {col.icono}
+            {col.label}
+          </div>
+        ))}
+      </div>
 
-        return (
-          <motion.div
-            key={intento.timestamp}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: rowDelay }}
-            className="grid grid-cols-6 gap-2"
-          >
-            <ResultadoCelda
-              color={intento.resultado.profesor}
-              label="Profesor"
-              valor=""
-              delay={rowDelay}
-              icono={<IconoProfesor />}
+      <div className="space-y-2">
+        {intentos.map((intento, index) => {
+          const rowDelay = (intentos.length - 1 - index) * 0.08
+
+          return (
+            <motion.div
+              key={intento.timestamp}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: rowDelay }}
+              className="grid grid-cols-6 gap-2"
             >
-              <div className="flex items-center gap-1.5 mt-0.5">
+              <ResultadoCelda
+                color={intento.resultado.profesor}
+                delay={rowDelay}
+                esFoto
+              >
                 <ImageWithFallback
                   src={intento.profesor.foto_url}
                   alt={intento.profesor.nombre}
-                  className="w-6 h-6 rounded-full object-cover flex-shrink-0"
+                  className="w-full h-full object-cover"
                 />
-                <span className="text-[11px] font-semibold truncate max-w-[60px]">
-                  {intento.profesor.nombre}
-                </span>
-              </div>
-            </ResultadoCelda>
+              </ResultadoCelda>
 
-            <ResultadoCelda
-              color={intento.resultado.catedras}
-              label="Cátedra/s"
-              valor={intento.profesor.catedras.map((c) => c.nombre).join(', ')}
-              delay={rowDelay + 0.15}
-              icono={<IconoCatedra />}
-            />
+              <ResultadoCelda
+                color={intento.resultado.catedras}
+                valor={intento.profesor.catedras.map((c) => c.nombre).join(', ')}
+                delay={rowDelay + 0.15}
+              />
 
-            <ResultadoCelda
-              color={intento.resultado.presencialidad}
-              label="Presencialidad"
-              valor={intento.profesor.presencialidades.map((p) => p.nombre).join(', ')}
-              delay={rowDelay + 0.3}
-              icono={<IconoPresencialidad />}
-            />
+              <ResultadoCelda
+                color={intento.resultado.presencialidad}
+                valor={intento.profesor.presencialidades.map((p) => p.nombre).join(', ')}
+                delay={rowDelay + 0.3}
+              />
 
-            <ResultadoCelda
-              color={intento.resultado.legajo}
-              label="Legajo"
-              valor={String(intento.profesor.legajo)}
-              delay={rowDelay + 0.45}
-              icono={<IconoLegajo />}
-            />
+              <ResultadoCelda
+                color={intento.resultado.legajo}
+                valor={String(intento.profesor.legajo)}
+                delay={rowDelay + 0.45}
+              />
 
-            <ResultadoCelda
-              color={intento.resultado.jefe_catedra}
-              label="Jefe"
-              valor={intento.profesor.jefe_catedra ? 'Sí' : 'No'}
-              delay={rowDelay + 0.6}
-              icono={<IconoJefe />}
-            />
+              <ResultadoCelda
+                color={intento.resultado.jefe_catedra}
+                valor={intento.profesor.jefe_catedra ? 'Sí' : 'No'}
+                delay={rowDelay + 0.6}
+              />
 
-            <ResultadoCelda
-              color={intento.resultado.edad}
-              label="Edad"
-              valor={String(intento.profesor.edad)}
-              delay={rowDelay + 0.75}
-              icono={<IconoEdad />}
-            />
-          </motion.div>
-        )
-      })}
+              <ResultadoCelda
+                color={intento.resultado.edad}
+                valor={String(intento.profesor.edad)}
+                delay={rowDelay + 0.75}
+              />
+            </motion.div>
+          )
+        })}
+      </div>
 
       {partida?.adivinado && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-4 bg-[#22c55e]/10 border border-[#22c55e]/30 rounded-xl text-center shadow-[0_0_20px_rgba(34,197,94,0.15)]"
+          className="mt-4 p-4 bg-[#22c55e]/10 border border-[#22c55e]/30 rounded-xl text-center shadow-[0_0_20px_rgba(34,197,94,0.15)]"
         >
           <p className="text-[#22c55e] font-bold text-lg">¡Felicitaciones!</p>
           <p className="text-[#22c55e]/80 text-sm">Adivinaste el profesor en {partida.intentos.length} {partida.intentos.length === 1 ? 'intento' : 'intentos'}</p>
