@@ -60,11 +60,11 @@ export function ResultadoCelda({ color, valor, children, delay = 0, esFoto = fal
             {children}
           </div>
         ) : (
-          <div className="flex items-center justify-center w-full h-full px-2 py-1">
-            <div className={`flex items-center gap-1 text-[11px] font-bold leading-tight text-center ${s.texto}`}>
+          <div className="flex items-center justify-center w-full h-full px-1.5 py-1">
+            <div className={`flex items-center gap-1 text-[10px] font-semibold leading-snug text-center ${s.texto}`}>
               {children || (
                 <>
-                  <span className="line-clamp-2">{valor}</span>
+                  <span>{valor}</span>
                   {color === 'subida' && (
                     <motion.svg className="w-4 h-4 shrink-0 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                       initial={{ y: 4, opacity: 0 }}
