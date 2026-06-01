@@ -99,7 +99,7 @@ CREATE POLICY "Delete admin - profesor_presencialidad" ON profesor_presencialida
   FOR DELETE USING (auth.uid() IS NOT NULL);
 
 -- 5. Políticas de STORAGE buckets
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+-- NOTA: storage.objects ya tiene RLS habilitado por defecto en Supabase
 -- Los buckets deben existir: profesores-fotos, profesores-audios, profesores-imagenes-pista
 -- Cualquier usuario puede leer archivos
 CREATE POLICY "Lectura pública - storage" ON storage.objects

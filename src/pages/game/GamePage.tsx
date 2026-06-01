@@ -11,13 +11,11 @@ import { ModalVictoria } from '@/components/game/ModalVictoria'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 export function GamePage() {
-  const { iniciarPartida, partida, cargando, error } = useGameStore()
+  const { iniciarPartida, cargando, error } = useGameStore()
 
   useEffect(() => {
-    if (!partida) {
-      iniciarPartida()
-    }
-  }, [partida, iniciarPartida])
+    iniciarPartida()
+  }, [iniciarPartida])
 
   const fondo = (
     <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />

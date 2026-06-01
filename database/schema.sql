@@ -171,7 +171,9 @@ CREATE POLICY "Delete admin - profesor_presencialidad" ON profesor_presencialida
   FOR DELETE USING (auth.uid() IS NOT NULL);
 
 -- 6. RLS PARA STORAGE (buckets de archivos)
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
+-- NOTA: storage.objects ya tiene RLS habilitado por defecto en Supabase
+-- Si las políticas de storage no se pueden crear por SQL (error de permisos),
+-- usar Storage Dashboard en su lugar (ver instrucciones al final del archivo)
 -- Los buckets deben crearse manualmente desde Supabase Dashboard:
 -- Storage -> Create bucket -> nombre: profesores-fotos (público)
 -- Storage -> Create bucket -> nombre: profesores-audios (público)
@@ -226,9 +228,32 @@ CREATE POLICY "Eliminar archivos - admin" ON storage.objects
 -- INSTRUCCIONES POST-CREACIÓN:
 -- 1. Ejecutar este script en SQL Editor de Supabase
 -- 2. Crear buckets de Storage desde el Dashboard:
---    - profesores-fotos (público)
---    - profesores-audios (público)
---    - profesores-imagenes-pista (público)
--- 3. En Authentication > Settings, habilitar Email/Password
--- 4. Crear usuario admin manualmente en Authentication > Users
+--    Storage → Create bucket → nombre: profesores-fotos (marcar público)
+--    Storage → Create bucket → nombre: profesores-audios (marcar público)
+--    Storage → Create bucket → nombre: profesores-imagenes-pista (marcar público)
+-- 3. Configurar políticas de Storage (SI las políticas SQL de arriba dieron error de permisos):
+--    En Storage Dashboard, entrar a cada bucket → pestaña "Policies" →
+--    agregar las siguientes reglas:
+--
+--    PARA CADA BUCKET (hacerlo en profesores-fotos, profesores-audios, profesores-imagenes-pista):
+--
+--    a) Name: "Lectura pública"
+--       Allowed operations: SELECT
+--       Policy definition: true
+--       Policy definition (target): true
+--
+--    b) Name: "Subida admin"
+--       Allowed operations: INSERT
+--       Policy definition: (auth.uid() IS NOT NULL)
+--       Policy definition (target): (auth.uid() IS NOT NULL)
+--
+--    c) Name: "Eliminar admin"
+--       Allowed operations: DELETE
+--       Policy definition: (auth.uid() IS NOT NULL)
+--
+--    Alternativa más rápida: en cada bucket, editar y marcar "Public bucket" (aunque
+--    cualquiera podría subir archivos, con la anon key ya expuesta es aceptable).
+--
+-- 4. En Authentication > Settings, habilitar Email/Password
+-- 5. Crear usuario admin manualmente en Authentication > Users
 -- ============================================

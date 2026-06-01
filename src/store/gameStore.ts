@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion } from '@/types'
-import { obtenerProfesorDelDia } from '@/services/profesores'
+import { obtenerProfesorDelDia, obtenerProfesor } from '@/services/profesores'
 
 function obtenerFechaKey(): string {
   return new Date().toISOString().split('T')[0]
@@ -122,9 +122,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       const partidaExistente = get().partida
 
       if (partidaExistente && partidaExistente.fecha === fecha) {
+        const profesor = await obtenerProfesor(partidaExistente.profesorId)
         const audioDesbloq = partidaExistente.intentos.length >= 3
         const imagenDesbloq = partidaExistente.intentos.length >= 5
         set({
+          profesorDelDia: profesor,
           pistaAudioDesbloqueada: audioDesbloq,
           pistaImagenDesbloqueada: imagenDesbloq,
           cargando: false,
