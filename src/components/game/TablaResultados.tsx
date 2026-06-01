@@ -5,6 +5,7 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 
 export function TablaResultados() {
   const { partida } = useGameStore()
+  const intentos = partida?.intentos ? [...partida.intentos].reverse() : []
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-4 overflow-x-auto">
@@ -25,19 +26,19 @@ export function TablaResultados() {
             </tr>
           </thead>
           <tbody>
-            {(!partida || partida.intentos.length === 0) ? (
+            {intentos.length === 0 ? (
               <tr>
                 <td colSpan={6} className="text-center py-8 text-dark-500 text-sm">
                   Seleccioná un profesor para comenzar
                 </td>
               </tr>
             ) : (
-              partida.intentos.map((intento, index) => (
+              intentos.map((intento, index) => (
                 <motion.tr
                   key={intento.timestamp}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: (intentos.length - 1 - index) * 0.1 }}
                   className="border-b border-dark-800 hover:bg-dark-800/30 transition-colors"
                 >
                   <ResultadoCelda color={intento.resultado.profesor} delay={0.1}>

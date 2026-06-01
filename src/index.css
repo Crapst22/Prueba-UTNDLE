@@ -98,8 +98,8 @@
   }
 
   .input {
-    background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.75rem;
     padding: 0.75rem 1rem;
     color: white;
@@ -109,13 +109,13 @@
   }
 
   .input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .input:focus {
     border-color: var(--color-primary-400);
     box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.2);
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: rgba(255, 255, 255, 0.2);
   }
 }
 

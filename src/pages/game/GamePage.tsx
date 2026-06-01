@@ -52,7 +52,7 @@ export function GamePage() {
     <div className="min-h-screen flex flex-col relative">
       {fondo}
       <div className="fixed inset-0 bg-black/40 pointer-events-none" />
-      <div className="relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 flex flex-col min-h-screen pb-8">
         <TopBar />
         <ModosJuego />
         <PanelPistas />
