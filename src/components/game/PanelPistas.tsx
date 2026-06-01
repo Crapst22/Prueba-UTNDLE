@@ -58,11 +58,11 @@ export function PanelPistas() {
                   alt="Pista visual del profesor"
                   className="absolute"
                   style={{
-                    width: '200%',
-                    height: '200%',
+                    width: '400%',
+                    height: '400%',
                     maxWidth: 'none',
-                    top: `-${offsetY}%`,
-                    left: `-${offsetX}%`,
+                    top: `-${offsetY * 3}%`,
+                    left: `-${offsetX * 3}%`,
                     opacity: 0.85,
                   }}
                 />

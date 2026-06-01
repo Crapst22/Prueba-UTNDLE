@@ -98,6 +98,7 @@ interface GameState {
   iniciarPartida: () => Promise<void>
   realizarIntento: (profesor: Profesor) => void
   reiniciarEstado: () => void
+  reiniciarPartida: () => void
   setMostrarEstadisticas: (mostrar: boolean) => void
   setMostrarAyuda: (mostrar: boolean) => void
   setModoJuego: (modo: string) => void
@@ -229,6 +230,18 @@ export const useGameStore = create<GameState>((set, get) => ({
       profesorDelDia: null,
       partida: null,
       estadisticas: stats,
+      pistaAudioDesbloqueada: false,
+      pistaImagenDesbloqueada: false,
+      cargando: false,
+      error: null,
+    })
+  },
+
+  reiniciarPartida: () => {
+    localStorage.removeItem('utndle_partida')
+    set({
+      profesorDelDia: null,
+      partida: null,
       pistaAudioDesbloqueada: false,
       pistaImagenDesbloqueada: false,
       cargando: false,

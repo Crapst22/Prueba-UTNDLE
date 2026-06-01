@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '@/store/authStore'
+import { useGameStore } from '@/store/gameStore'
 import { obtenerProfesores, eliminarProfesor } from '@/services/profesores'
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
@@ -10,6 +11,7 @@ import type { Profesor } from '@/types'
 
 export function AdminDashboard() {
   const { user, verificando, logout, checkSession } = useAuthStore()
+  const { reiniciarPartida } = useGameStore()
   const navigate = useNavigate()
   const [profesores, setProfesores] = useState<Profesor[]>([])
   const [cargando, setCargando] = useState(true)
@@ -18,17 +20,23 @@ export function AdminDashboard() {
 
   useEffect(() => {
     checkSession()
-  }, [checkSession])
+    cargarProfesores()
+  }, [])
 
-  useEffect(() => {
-    if (!verificando && !user) {
-      navigate('/admin/login')
-    }
-  }, [user, verificando, navigate])
+  const handleReiniciar = () => {
+    reiniciarPartida()
+    navigate('/')
+  }
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/admin/login')
+  }
 
   const cargarProfesores = useCallback(async () => {
+    setCargando(true)
+    setError(null)
     try {
-      setCargando(true)
       const data = await obtenerProfesores()
       setProfesores(data)
     } catch (err) {
@@ -38,26 +46,15 @@ export function AdminDashboard() {
     }
   }, [])
 
-  useEffect(() => {
-    if (user) {
-      cargarProfesores()
-    }
-  }, [user, cargarProfesores])
-
-  const handleEliminar = async (id: string) => {
+  const handleEliminar = useCallback(async (id: string) => {
     try {
       await eliminarProfesor(id)
       setProfesores((prev) => prev.filter((p) => p.id !== id))
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al eliminar')
+      setError(err instanceof Error ? err.message : 'Error al eliminar profesor')
     }
     setEliminarId(null)
-  }
-
-  const handleLogout = async () => {
-    await logout()
-    navigate('/admin/login')
-  }
+  }, [])
 
   if (verificando) {
     return (
@@ -98,6 +95,12 @@ export function AdminDashboard() {
               className="btn-primary text-xs py-1.5 px-3"
             >
               + Nuevo Profesor
+            </button>
+            <button
+              onClick={handleReiniciar}
+              className="btn-secondary text-xs py-1.5 px-3 border-red-500/30 text-red-400 hover:bg-red-500/10"
+            >
+              Reiniciar Partida
             </button>
             <button
               onClick={handleLogout}
