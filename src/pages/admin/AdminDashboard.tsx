@@ -11,7 +11,7 @@ import type { Profesor } from '@/types'
 
 export function AdminDashboard() {
   const { user, verificando, logout, checkSession } = useAuthStore()
-  const { reiniciarPartida } = useGameStore()
+  const { reiniciarPartida, cambiarProfesorDelDia } = useGameStore()
   const navigate = useNavigate()
   const [profesores, setProfesores] = useState<Profesor[]>([])
   const [cargando, setCargando] = useState(true)
@@ -26,6 +26,10 @@ export function AdminDashboard() {
   const handleReiniciar = () => {
     reiniciarPartida()
     navigate('/')
+  }
+
+  const handleCambiarProfesor = async () => {
+    await cambiarProfesorDelDia()
   }
 
   const handleLogout = async () => {
@@ -101,6 +105,12 @@ export function AdminDashboard() {
               className="btn-secondary text-xs py-1.5 px-3 border-red-500/30 text-red-400 hover:bg-red-500/10"
             >
               Reiniciar Partida
+            </button>
+            <button
+              onClick={handleCambiarProfesor}
+              className="btn-secondary text-xs py-1.5 px-3 border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+            >
+              Cambiar Profesor
             </button>
             <button
               onClick={handleLogout}

@@ -187,6 +187,23 @@ export async function actualizarProfesor(
   return obtenerProfesor(id) as Promise<Profesor>
 }
 
+export async function obtenerProfesorAleatorio(excluirId?: string): Promise<Profesor | null> {
+  const { data: ids, error } = await supabase
+    .from('profesores')
+    .select('id')
+
+  if (error) throw error
+  if (!ids || ids.length === 0) return null
+
+  let idsDisponibles = ids.map((i) => i.id)
+  if (excluirId && idsDisponibles.length > 1) {
+    idsDisponibles = idsDisponibles.filter((id) => id !== excluirId)
+  }
+
+  const indice = Math.floor(Math.random() * idsDisponibles.length)
+  return obtenerProfesor(idsDisponibles[indice])
+}
+
 export async function eliminarProfesor(id: string): Promise<void> {
   const profesor = await obtenerProfesor(id)
 

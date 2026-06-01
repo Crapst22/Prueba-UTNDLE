@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion } from '@/types'
-import { obtenerProfesorDelDia, obtenerProfesor } from '@/services/profesores'
+import { obtenerProfesorDelDia, obtenerProfesor, obtenerProfesorAleatorio } from '@/services/profesores'
 
 function obtenerFechaKey(): string {
   return new Date().toISOString().split('T')[0]
@@ -109,6 +109,7 @@ interface GameState {
   realizarIntento: (profesor: Profesor) => void
   reiniciarEstado: () => void
   reiniciarPartida: () => void
+  cambiarProfesorDelDia: () => Promise<void>
   setMostrarEstadisticas: (mostrar: boolean) => void
   setMostrarAyuda: (mostrar: boolean) => void
   setModoJuego: (modo: string) => void
@@ -257,6 +258,36 @@ export const useGameStore = create<GameState>((set, get) => ({
       cargando: false,
       error: null,
     })
+  },
+
+  cambiarProfesorDelDia: async () => {
+    set({ cargando: true, error: null })
+    try {
+      const profesorActual = get().profesorDelDia
+      const profesor = await obtenerProfesorAleatorio(profesorActual?.id)
+      if (!profesor) {
+        set({ error: 'No hay profesores disponibles', cargando: false })
+        return
+      }
+      const fecha = obtenerFechaKey()
+      const nuevaPartida: PartidaDiaria = {
+        fecha,
+        profesorId: profesor.id,
+        adivinado: false,
+        intentos: [],
+        tiempoInicio: Date.now(),
+      }
+      guardarPartida(nuevaPartida)
+      set({
+        profesorDelDia: profesor,
+        partida: nuevaPartida,
+        pistaAudioDesbloqueada: false,
+        pistaImagenDesbloqueada: false,
+        cargando: false,
+      })
+    } catch (err) {
+      set({ error: err instanceof Error ? err.message : 'Error al cambiar profesor', cargando: false })
+    }
   },
 
   setMostrarEstadisticas: (mostrar) => set({ mostrarEstadisticas: mostrar }),
