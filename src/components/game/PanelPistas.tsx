@@ -108,7 +108,7 @@ export function PanelPistas() {
             onClick={() => setImagenExpandida(false)}
           >
             <motion.div
-              className="relative w-[80vmin] h-[80vmin] overflow-hidden rounded-2xl border border-dark-600 shadow-2xl"
+              className="relative w-[80vmin] h-[80vmin] rounded-2xl border border-dark-600 shadow-2xl bg-black/40"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
@@ -117,15 +117,8 @@ export function PanelPistas() {
               <img
                 src={profesorDelDia!.imagen_pista_url}
                 alt="Pista visual del profesor"
-                className="absolute pointer-events-none"
-                style={{
-                  width: '400%',
-                  height: '400%',
-                  maxWidth: 'none',
-                  top: `-${offsetY * 3}%`,
-                  left: `-${offsetX * 3}%`,
-                  opacity: 0.9,
-                }}
+                className="w-full h-full object-contain pointer-events-none"
+                style={{ opacity: 0.9 }}
               />
               <button
                 onClick={() => setImagenExpandida(false)}
