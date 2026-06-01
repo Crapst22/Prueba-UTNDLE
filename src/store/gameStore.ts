@@ -51,8 +51,10 @@ function guardarEstadisticas(stats: Estadisticas) {
 }
 
 function compararProfesores(buscado: Profesor, correcto: Profesor): ResultadoComparacion {
+  const esCorrecto = buscado.id === correcto.id
+
   const resultado: ResultadoComparacion = {
-    profesor: buscado.id === correcto.id ? 'verde' : 'rojo',
+    profesor: esCorrecto ? 'verde' : 'rojo',
     catedras: 'rojo',
     presencialidad: 'rojo',
     legajo: 'rojo',
@@ -63,22 +65,22 @@ function compararProfesores(buscado: Profesor, correcto: Profesor): ResultadoCom
   const catedrasBuscado = buscado.catedras.map((c) => c.nombre.toLowerCase())
   const catedrasCorrecto = correcto.catedras.map((c) => c.nombre.toLowerCase())
   const comparteCatedra = catedrasBuscado.some((c) => catedrasCorrecto.includes(c))
-  resultado.catedras = comparteCatedra ? 'verde' : 'rojo'
+  if (comparteCatedra) resultado.catedras = esCorrecto ? 'verde' : 'amarillo'
 
   const presBuscado = buscado.presencialidades.map((p) => p.nombre.toLowerCase())
   const presCorrecto = correcto.presencialidades.map((p) => p.nombre.toLowerCase())
   const presCoincide = presBuscado.some((p) => presCorrecto.includes(p))
-  resultado.presencialidad = presCoincide ? 'verde' : 'rojo'
+  if (presCoincide) resultado.presencialidad = esCorrecto ? 'verde' : 'amarillo'
 
   if (buscado.legajo > correcto.legajo) resultado.legajo = 'bajada'
   else if (buscado.legajo < correcto.legajo) resultado.legajo = 'subida'
-  else resultado.legajo = 'verde'
+  else resultado.legajo = esCorrecto ? 'verde' : 'amarillo'
 
-  resultado.jefe_catedra = buscado.jefe_catedra === correcto.jefe_catedra ? 'verde' : 'rojo'
+  if (buscado.jefe_catedra === correcto.jefe_catedra) resultado.jefe_catedra = esCorrecto ? 'verde' : 'amarillo'
 
   if (buscado.edad > correcto.edad) resultado.edad = 'bajada'
   else if (buscado.edad < correcto.edad) resultado.edad = 'subida'
-  else resultado.edad = 'verde'
+  else resultado.edad = esCorrecto ? 'verde' : 'amarillo'
 
   return resultado
 }

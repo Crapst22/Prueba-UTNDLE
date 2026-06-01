@@ -39,7 +39,7 @@ export function TopBar() {
             {racha > 0 && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-500/15 border border-yellow-500/30">
                 <img
-                  src="/iconos/racha.jpg"
+                  src="/iconos/racha.gif"
                   alt="Racha"
                   className="w-4 h-4 object-contain"
                 />

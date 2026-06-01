@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 const modos = [
   { id: 'clasico', label: 'Clásico', icon: '/iconos/clasico.png' },
   { id: 'frase', label: 'Frase', icon: '/iconos/frase.png' },
-  { id: 'adivina-la-foto', label: 'Adivina la Foto', icon: '/iconos/adivina-la-foto.jpg' },
+  { id: 'adivina-la-foto', label: 'Adivina la Foto', icon: '/iconos/adivina-la-foto.png' },
   { id: 'ubicacion-utn', label: 'Ubicación UTN', icon: '/iconos/ubicacion-utn.png' },
 ]
 
@@ -18,11 +18,7 @@ export function ModosJuego() {
           title="Próximamente"
           disabled
         >
-          <img
-            src={modo.icon}
-            alt={modo.label}
-            className="w-10 h-10 object-contain"
-          />
+          <img src={modo.icon} alt={modo.label} className="w-10 h-10 object-contain" />
           <span className="text-xs font-medium text-white/70 whitespace-nowrap">{modo.label}</span>
         </motion.button>
       ))}

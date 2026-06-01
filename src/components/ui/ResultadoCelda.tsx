@@ -9,6 +9,7 @@ interface ResultadoCeldaProps {
 
 const colorMap: Record<ColorResultado, string> = {
   verde: 'bg-green-600 border-green-500',
+  amarillo: 'bg-yellow-600 border-yellow-500',
   rojo: 'bg-red-600/80 border-red-500',
   subida: 'bg-dark-600 border-dark-500',
   bajada: 'bg-dark-600 border-dark-500',

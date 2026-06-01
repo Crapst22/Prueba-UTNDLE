@@ -20,11 +20,11 @@ export function ModalVictoria() {
       .map((i) => {
         const r = i.resultado
         const profesor = r.profesor === 'verde' ? '🟩' : '🟥'
-        const catedras = r.catedras === 'verde' ? '🟩' : '🟥'
-        const presencialidad = r.presencialidad === 'verde' ? '🟩' : '🟥'
-        const legajo = r.legajo === 'verde' ? '🟩' : r.legajo === 'subida' ? '⬆️' : '⬇️'
-        const jefe = r.jefe_catedra === 'verde' ? '🟩' : '🟥'
-        const edad = r.edad === 'verde' ? '🟩' : r.edad === 'subida' ? '⬆️' : '⬇️'
+        const catedras = r.catedras === 'verde' ? '🟩' : r.catedras === 'amarillo' ? '🟨' : '🟥'
+        const presencialidad = r.presencialidad === 'verde' ? '🟩' : r.presencialidad === 'amarillo' ? '🟨' : '🟥'
+        const legajo = r.legajo === 'verde' ? '🟩' : r.legajo === 'amarillo' ? '🟨' : r.legajo === 'subida' ? '⬆️' : '⬇️'
+        const jefe = r.jefe_catedra === 'verde' ? '🟩' : r.jefe_catedra === 'amarillo' ? '🟨' : '🟥'
+        const edad = r.edad === 'verde' ? '🟩' : r.edad === 'amarillo' ? '🟨' : r.edad === 'subida' ? '⬆️' : '⬇️'
         return `${profesor}${catedras}${presencialidad}${legajo}${jefe}${edad}`
       })
       .join('\n')

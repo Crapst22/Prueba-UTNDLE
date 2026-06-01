@@ -2,15 +2,26 @@ import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 
-function PosicionAleatoria() {
-  const offsetX = useMemo(() => Math.floor(Math.random() * 60), [])
-  const offsetY = useMemo(() => Math.floor(Math.random() * 60), [])
+function hashSeed(str: string): number {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash
+  }
+  return Math.abs(hash)
+}
+
+function usePosicionEstable(id: string) {
+  const seed = useMemo(() => hashSeed(id), [id])
+  const offsetX = useMemo(() => seed % 60, [seed])
+  const offsetY = useMemo(() => Math.floor(seed / 60) % 60, [seed])
   return { offsetX, offsetY }
 }
 
 export function PanelPistas() {
   const { pistaAudioDesbloqueada, pistaImagenDesbloqueada, profesorDelDia } = useGameStore()
-  const { offsetX, offsetY } = PosicionAleatoria()
+  const { offsetX, offsetY } = usePosicionEstable(profesorDelDia?.id ?? 'default')
   const [imagenExpandida, setImagenExpandida] = useState(false)
 
   return (

@@ -34,7 +34,7 @@ export interface ProfesorPresencialidad {
 
 export type ModoComparacion = 'exacto' | 'numerico' | 'catedras'
 
-export type ColorResultado = 'verde' | 'rojo' | 'subida' | 'bajada'
+export type ColorResultado = 'verde' | 'amarillo' | 'rojo' | 'subida' | 'bajada'
 
 export interface ResultadoComparacion {
   profesor: ColorResultado
