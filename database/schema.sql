@@ -51,13 +51,53 @@ CREATE INDEX IF NOT EXISTS idx_profesor_catedra_catedra ON profesor_catedra(cate
 CREATE INDEX IF NOT EXISTS idx_profesor_presencialidad_profesor ON profesor_presencialidad(profesor_id);
 CREATE INDEX IF NOT EXISTS idx_profesor_presencialidad_presencialidad ON profesor_presencialidad(presencialidad_id);
 
--- 4. DATOS INICIALES (PRESENCIALIDADES)
+-- 4. DATOS INICIALES
 
 INSERT INTO presencialidades (nombre) VALUES
   ('Villa María'),
   ('Córdoba'),
   ('San Francisco'),
   ('Virtual')
+ON CONFLICT (nombre) DO NOTHING;
+
+INSERT INTO catedras (nombre) VALUES
+  ('Análisis Matemático I'),
+  ('Álgebra y Geometría Analítica'),
+  ('Física I'),
+  ('Inglés I'),
+  ('Lógica y Estructuras Discretas'),
+  ('Algoritmos y Estructuras de Datos'),
+  ('Arquitectura de Computadoras'),
+  ('Sistemas y Procesos de Negocios'),
+  ('Análisis Matemático II'),
+  ('Física II'),
+  ('Ingeniería y Sociedad'),
+  ('Inglés II'),
+  ('Sintaxis y Semántica de los Lenguajes'),
+  ('Paradigmas de Programación'),
+  ('Sistemas Operativos'),
+  ('Análisis de Sistemas de Información'),
+  ('Probabilidad y Estadística'),
+  ('Economía'),
+  ('Bases de Datos'),
+  ('Desarrollo de Software'),
+  ('Comunicaciones de Datos'),
+  ('Análisis Numérico'),
+  ('Diseño de Sistemas de Información'),
+  ('Legislación'),
+  ('Ingeniería y Calidad de Software'),
+  ('Redes de Datos'),
+  ('Investigación Operativa'),
+  ('Simulación'),
+  ('Tecnologías para la Automatización'),
+  ('Administración de Sistemas de Información'),
+  ('Inteligencia Artificial'),
+  ('Ciencia de Datos'),
+  ('Sistemas de Gestión'),
+  ('Gestión Gerencial'),
+  ('Seguridad en los Sistemas de Información'),
+  ('Proyecto Final'),
+  ('Práctica Profesional Supervisada (PPS)')
 ON CONFLICT (nombre) DO NOTHING;
 
 -- 5. RLS (Row Level Security)

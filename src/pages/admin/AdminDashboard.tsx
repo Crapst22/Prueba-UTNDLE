@@ -86,6 +86,12 @@ export function AdminDashboard() {
           <div className="flex items-center gap-3">
             <span className="text-xs text-dark-400 hidden sm:inline">{user.email}</span>
             <button
+              onClick={() => navigate('/admin/configuracion')}
+              className="btn-secondary text-xs py-1.5 px-3"
+            >
+              Configuración
+            </button>
+            <button
               onClick={() => navigate('/admin/nuevo')}
               className="btn-primary text-xs py-1.5 px-3"
             >

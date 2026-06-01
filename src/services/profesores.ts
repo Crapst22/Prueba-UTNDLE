@@ -250,6 +250,38 @@ export async function obtenerCatedras(): Promise<Catedra[]> {
   return data || []
 }
 
+export async function crearCatedra(nombre: string): Promise<Catedra> {
+  const { data, error } = await supabase
+    .from('catedras')
+    .insert([{ nombre }])
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+export async function eliminarCatedra(id: string): Promise<void> {
+  const { error } = await supabase.from('catedras').delete().eq('id', id)
+  if (error) throw error
+}
+
+export async function crearPresencialidad(nombre: string): Promise<Presencialidad> {
+  const { data, error } = await supabase
+    .from('presencialidades')
+    .insert([{ nombre }])
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+export async function eliminarPresencialidad(id: string): Promise<void> {
+  const { error } = await supabase.from('presencialidades').delete().eq('id', id)
+  if (error) throw error
+}
+
 function hashFecha(fecha: string, total: number): number {
   let hash = 0
   for (let i = 0; i < fecha.length; i++) {

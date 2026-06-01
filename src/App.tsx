@@ -14,6 +14,9 @@ const AdminDashboard = lazy(() =>
 const AdminProfesorForm = lazy(() =>
   import('@/pages/admin/AdminProfesorForm').then((m) => ({ default: m.AdminProfesorForm }))
 )
+const AdminConfiguracion = lazy(() =>
+  import('@/pages/admin/AdminConfiguracion').then((m) => ({ default: m.AdminConfiguracion }))
+)
 
 function App() {
   return (
@@ -30,6 +33,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/nuevo" element={<AdminProfesorForm />} />
         <Route path="/admin/editar/:id" element={<AdminProfesorForm />} />
+        <Route path="/admin/configuracion" element={<AdminConfiguracion />} />
       </Routes>
     </Suspense>
   )
