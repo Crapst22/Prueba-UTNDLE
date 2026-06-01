@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { useMemo, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 
 function PosicionAleatoria() {
@@ -11,8 +11,10 @@ function PosicionAleatoria() {
 export function PanelPistas() {
   const { pistaAudioDesbloqueada, pistaImagenDesbloqueada, profesorDelDia } = useGameStore()
   const { offsetX, offsetY } = PosicionAleatoria()
+  const [imagenExpandida, setImagenExpandida] = useState(false)
 
   return (
+    <>
     <div className="flex gap-3 px-4 py-3 max-w-4xl mx-auto w-full">
       <div className="flex-1">
         <motion.div
@@ -52,11 +54,14 @@ export function PanelPistas() {
           {pistaImagenDesbloqueada && profesorDelDia?.imagen_pista_url ? (
             <>
               <p className="text-xs text-dark-400 font-medium">Pista Visual</p>
-              <div className="relative w-24 h-24 overflow-hidden rounded-lg border border-dark-600">
+              <div
+                className="relative w-24 h-24 overflow-hidden rounded-lg border border-dark-600 cursor-pointer"
+                onClick={() => setImagenExpandida(true)}
+              >
                 <img
                   src={profesorDelDia.imagen_pista_url}
                   alt="Pista visual del profesor"
-                  className="absolute"
+                  className="absolute pointer-events-none"
                   style={{
                     width: '400%',
                     height: '400%',
@@ -81,5 +86,49 @@ export function PanelPistas() {
         </motion.div>
       </div>
     </div>
+
+      <AnimatePresence>
+        {imagenExpandida && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setImagenExpandida(false)}
+          >
+            <motion.div
+              className="relative w-[80vmin] h-[80vmin] overflow-hidden rounded-2xl border border-dark-600 shadow-2xl"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={profesorDelDia!.imagen_pista_url}
+                alt="Pista visual del profesor"
+                className="absolute pointer-events-none"
+                style={{
+                  width: '400%',
+                  height: '400%',
+                  maxWidth: 'none',
+                  top: `-${offsetY * 3}%`,
+                  left: `-${offsetX * 3}%`,
+                  opacity: 0.9,
+                }}
+              />
+              <button
+                onClick={() => setImagenExpandida(false)}
+                className="absolute top-3 right-3 z-10 bg-black/50 rounded-full p-1.5 text-white hover:bg-black/70 transition-colors"
+                aria-label="Cerrar"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

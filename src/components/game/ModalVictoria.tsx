@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 import { Modal } from '@/components/ui/Modal'
@@ -5,10 +6,11 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 
 export function ModalVictoria() {
   const { partida, profesorDelDia } = useGameStore()
+  const [cerrado, setCerrado] = useState(false)
 
   if (!partida || !profesorDelDia) return null
 
-  const abierto = partida.adivinado || (partida.intentos.length >= 6 && !partida.adivinado)
+  const abierto = (partida.adivinado || (partida.intentos.length >= 6 && !partida.adivinado)) && !cerrado
   const tiempo = partida.tiempoFin ? Math.floor((partida.tiempoFin - partida.tiempoInicio) / 1000) : 0
   const minutos = Math.floor(tiempo / 60)
   const segundos = tiempo % 60
@@ -39,10 +41,19 @@ export function ModalVictoria() {
   return (
     <Modal
       isOpen={abierto}
-      onClose={() => {}}
+      onClose={() => setCerrado(true)}
       size="sm"
     >
-      <div className="text-center">
+      <div className="text-center relative">
+        <button
+          onClick={() => setCerrado(true)}
+          className="absolute -top-1 -right-1 text-dark-400 hover:text-white transition-colors p-1"
+          aria-label="Cerrar"
+        >
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -79,7 +90,7 @@ export function ModalVictoria() {
 
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div className="bg-dark-700 rounded-lg p-2">
-            <p className="text-lg font-bold">{partida.intentos.length}/6</p>
+            <p className="text-lg font-bold">{partida.intentos.length}</p>
             <p className="text-xs text-dark-400">Intentos</p>
           </div>
           <div className="bg-dark-700 rounded-lg p-2">

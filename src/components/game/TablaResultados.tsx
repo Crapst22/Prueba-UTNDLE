@@ -82,6 +82,16 @@ export function TablaResultados() {
           </tbody>
         </table>
       </motion.div>
+      {partida?.adivinado && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-center"
+        >
+          <p className="text-green-400 font-bold text-lg">¡Felicitaciones!</p>
+          <p className="text-green-300/80 text-sm">Adivinaste el profesor en {partida.intentos.length} {partida.intentos.length === 1 ? 'intento' : 'intentos'}</p>
+        </motion.div>
+      )}
     </div>
   )
 }
