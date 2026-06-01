@@ -5,12 +5,12 @@ import { Modal } from '@/components/ui/Modal'
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 
 export function ModalVictoria() {
-  const { partida, profesorDelDia } = useGameStore()
+  const { partida, profesorDelDia, mostrarVictoria } = useGameStore()
   const [cerrado, setCerrado] = useState(false)
 
   if (!partida || !profesorDelDia) return null
 
-  const abierto = (partida.adivinado || (partida.intentos.length >= 6 && !partida.adivinado)) && !cerrado
+  const abierto = mostrarVictoria && !cerrado
   const tiempo = partida.tiempoFin ? Math.floor((partida.tiempoFin - partida.tiempoInicio) / 1000) : 0
   const minutos = Math.floor(tiempo / 60)
   const segundos = tiempo % 60

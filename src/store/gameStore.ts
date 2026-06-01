@@ -104,6 +104,7 @@ interface GameState {
   modoJuego: string
   mostrarEstadisticas: boolean
   mostrarAyuda: boolean
+  mostrarVictoria: boolean
 
   iniciarPartida: () => Promise<void>
   realizarIntento: (profesor: Profesor) => void
@@ -126,6 +127,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   modoJuego: 'clasico',
   mostrarEstadisticas: false,
   mostrarAyuda: false,
+  mostrarVictoria: false,
 
   iniciarPartida: async () => {
     set({ cargando: true, error: null })
@@ -142,6 +144,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           pistaAudioDesbloqueada: audioDesbloq,
           pistaImagenDesbloqueada: imagenDesbloq,
           cargando: false,
+          mostrarVictoria: false,
         })
         return
       }
@@ -167,6 +170,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         pistaAudioDesbloqueada: false,
         pistaImagenDesbloqueada: false,
         cargando: false,
+        mostrarVictoria: false,
       })
     } catch (err) {
       set({ error: err instanceof Error ? err.message : 'Error al cargar la partida', cargando: false })
@@ -233,6 +237,13 @@ export const useGameStore = create<GameState>((set, get) => ({
       pistaAudioDesbloqueada: audioDesbloq,
       pistaImagenDesbloqueada: imagenDesbloq,
     })
+
+    if (adivinado) {
+      const delay = (nuevosIntentos.length - 1) * 80 + 1500
+      setTimeout(() => {
+        set({ mostrarVictoria: true })
+      }, delay)
+    }
   },
 
   reiniciarEstado: () => {
@@ -245,6 +256,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       pistaImagenDesbloqueada: false,
       cargando: false,
       error: null,
+      mostrarVictoria: false,
     })
   },
 
@@ -257,6 +269,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       pistaImagenDesbloqueada: false,
       cargando: false,
       error: null,
+      mostrarVictoria: false,
     })
   },
 
@@ -284,6 +297,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         pistaAudioDesbloqueada: false,
         pistaImagenDesbloqueada: false,
         cargando: false,
+        mostrarVictoria: false,
       })
     } catch (err) {
       set({ error: err instanceof Error ? err.message : 'Error al cambiar profesor', cargando: false })

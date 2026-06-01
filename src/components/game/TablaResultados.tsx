@@ -143,17 +143,6 @@ export function TablaResultados() {
           )
         })}
       </div>
-
-      {partida?.adivinado && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-4 p-4 bg-[#22c55e]/10 border border-[#22c55e]/30 rounded-xl text-center shadow-[0_0_20px_rgba(34,197,94,0.15)]"
-        >
-          <p className="text-[#22c55e] font-bold text-lg">¡Felicitaciones!</p>
-          <p className="text-[#22c55e]/80 text-sm">Adivinaste el profesor en {partida.intentos.length} {partida.intentos.length === 1 ? 'intento' : 'intentos'}</p>
-        </motion.div>
-      )}
     </div>
   )
 }
