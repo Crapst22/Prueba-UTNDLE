@@ -48,7 +48,7 @@ export function ResultadoCelda({ color, valor, children, delay = 0, esFoto = fal
   return (
     <div className="perspective-[1000px]">
       <motion.div
-        className={`relative rounded-xl border ${s.borde} ${s.bg} ${s.glow} overflow-hidden group h-[72px]`}
+        className={`relative rounded-xl border ${s.borde} ${s.bg} ${s.glow} overflow-hidden group min-h-[72px]`}
         initial={{ rotateY: 180 }}
         animate={{ rotateY: 0 }}
         transition={{ duration: 0.5, delay, ease: 'easeOut' }}
@@ -60,11 +60,11 @@ export function ResultadoCelda({ color, valor, children, delay = 0, esFoto = fal
             {children}
           </div>
         ) : (
-          <div className="flex items-center justify-center w-full h-full px-2">
-            <div className={`flex items-center gap-1 text-sm font-bold leading-tight text-center ${s.texto}`}>
+          <div className="flex items-center justify-center w-full h-full min-h-[72px] px-2 py-1">
+            <div className={`flex items-center gap-1 text-xs font-bold leading-snug text-center ${s.texto}`}>
               {children || (
                 <>
-                  <span className="truncate">{valor}</span>
+                  <span className="line-clamp-3">{valor}</span>
                   {color === 'subida' && (
                     <motion.svg className="w-4 h-4 shrink-0 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                       initial={{ y: 4, opacity: 0 }}
