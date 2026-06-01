@@ -25,7 +25,7 @@ export function GamePage() {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         {fondo}
-        <div className="fixed inset-0 bg-black/60" />
+        <div className="fixed inset-0 bg-black/40" />
         <div className="relative z-10">
           <LoadingSpinner size="lg" text="Cargando partida..." />
         </div>
@@ -37,7 +37,7 @@ export function GamePage() {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         {fondo}
-        <div className="fixed inset-0 bg-black/60" />
+        <div className="fixed inset-0 bg-black/40" />
         <div className="relative z-10 text-center">
           <p className="text-red-400 mb-4">{error}</p>
           <button onClick={iniciarPartida} className="btn-primary">
@@ -51,7 +51,7 @@ export function GamePage() {
   return (
     <div className="min-h-screen flex flex-col relative">
       {fondo}
-      <div className="fixed inset-0 bg-black/70 pointer-events-none" />
+      <div className="fixed inset-0 bg-black/40 pointer-events-none" />
       <div className="relative z-10 flex flex-col min-h-screen">
         <TopBar />
         <ModosJuego />

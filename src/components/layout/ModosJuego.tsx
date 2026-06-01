@@ -1,25 +1,29 @@
 import { motion } from 'framer-motion'
 
 const modos = [
-  { id: 'clasico', label: 'Clásico', icon: '🎓' },
-  { id: 'imagen', label: 'Imagen', icon: '🖼️' },
-  { id: 'audio', label: 'Audio', icon: '🎵' },
-  { id: 'mixto', label: 'Mixto', icon: '🎲' },
+  { id: 'clasico', label: 'Clásico', icon: '/iconos/clasico.png' },
+  { id: 'frase', label: 'Frase', icon: '/iconos/frase.png' },
+  { id: 'adivina-la-foto', label: 'Adivina la Foto', icon: '/iconos/adivina-la-foto.jpg' },
+  { id: 'ubicacion-utn', label: 'Ubicación UTN', icon: '/iconos/ubicacion-utn.png' },
 ]
 
 export function ModosJuego() {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 px-4 max-w-4xl mx-auto w-full mt-3">
+    <div className="flex justify-center gap-3 px-4 max-w-4xl mx-auto w-full mt-5">
       {modos.map((modo) => (
         <motion.button
           key={modo.id}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-dark-800/60 border border-dark-700 text-dark-300 text-xs font-medium whitespace-nowrap cursor-not-allowed opacity-60"
-          whileHover={{ scale: 1.02 }}
+          className="flex flex-col items-center gap-2 px-5 py-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm cursor-not-allowed opacity-70 hover:opacity-90 transition-opacity min-w-[90px]"
+          whileHover={{ scale: 1.03 }}
           title="Próximamente"
           disabled
         >
-          <span>{modo.icon}</span>
-          <span>{modo.label}</span>
+          <img
+            src={modo.icon}
+            alt={modo.label}
+            className="w-10 h-10 object-contain"
+          />
+          <span className="text-xs font-medium text-white/70 whitespace-nowrap">{modo.label}</span>
         </motion.button>
       ))}
     </div>

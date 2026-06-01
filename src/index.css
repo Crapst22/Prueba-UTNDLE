@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: #f0fdf4;
-  --color-primary-100: #dcfce7;
-  --color-primary-200: #bbf7d0;
-  --color-primary-300: #86efac;
-  --color-primary-400: #4ade80;
-  --color-primary-500: #22c55e;
-  --color-primary-600: #16a34a;
-  --color-primary-700: #15803d;
-  --color-primary-800: #166534;
-  --color-primary-900: #14532d;
+  --color-primary-50: #fefce8;
+  --color-primary-100: #fef9c3;
+  --color-primary-200: #fef08a;
+  --color-primary-300: #fde047;
+  --color-primary-400: #facc15;
+  --color-primary-500: #eab308;
+  --color-primary-600: #ca8a04;
+  --color-primary-700: #a16207;
+  --color-primary-800: #854d0e;
+  --color-primary-900: #713f12;
 
   --color-dark-50: #f8fafc;
   --color-dark-100: #f1f5f9;
@@ -67,16 +67,16 @@
   }
 
   .btn-primary {
-    background-color: var(--color-primary-600);
-    color: white;
-    font-weight: 600;
+    background-color: var(--color-primary-500);
+    color: var(--color-dark-950);
+    font-weight: 700;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     transition: all 0.2s;
   }
 
   .btn-primary:hover {
-    background-color: var(--color-primary-700);
+    background-color: var(--color-primary-400);
   }
 
   .btn-primary:disabled {
@@ -98,31 +98,33 @@
   }
 
   .input {
-    background-color: var(--color-dark-800);
-    border: 1px solid var(--color-dark-600);
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
     color: white;
     outline: none;
     transition: all 0.2s;
+    backdrop-filter: blur(4px);
   }
 
   .input::placeholder {
-    color: var(--color-dark-400);
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .input:focus {
-    border-color: transparent;
-    box-shadow: 0 0 0 2px var(--color-primary-500);
+    border-color: var(--color-primary-400);
+    box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.2);
+    background-color: rgba(255, 255, 255, 0.12);
   }
 }
 
 @utility text-shadow {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 @utility gradient-text {
-  background-image: linear-gradient(to right, var(--color-primary-400), var(--color-primary-600));
+  background-image: linear-gradient(to right, #facc15, #fef08a);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

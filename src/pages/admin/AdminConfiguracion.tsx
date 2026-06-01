@@ -105,7 +105,7 @@ export function AdminConfiguracion() {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
-        <div className="fixed inset-0 bg-black/60" />
+        <div className="fixed inset-0 bg-black/40" />
         <div className="relative z-10">
           <LoadingSpinner size="lg" text="Verificando sesión..." />
         </div>
@@ -118,7 +118,7 @@ export function AdminConfiguracion() {
   return (
     <div className="min-h-screen relative">
       <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
-      <div className="fixed inset-0 bg-black/70 pointer-events-none" />
+      <div className="fixed inset-0 bg-black/40 pointer-events-none" />
 
       <header className="relative z-40 border-b border-dark-700/50 bg-dark-900/80 backdrop-blur-md sticky top-0">
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
