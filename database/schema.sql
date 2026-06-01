@@ -101,6 +101,20 @@ INSERT INTO catedras (nombre) VALUES
 ON CONFLICT (nombre) DO NOTHING;
 
 -- 5. RLS (Row Level Security)
+-- PRIMERO: eliminar políticas existentes para evitar conflictos al re-ejecutar
+
+DO $$
+DECLARE
+  pol RECORD;
+BEGIN
+  FOR pol IN (
+    SELECT policyname, tablename FROM pg_policies
+    WHERE schemaname = 'public'
+    AND tablename IN ('profesores','presencialidades','catedras','profesor_catedra','profesor_presencialidad')
+  ) LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON %I', pol.policyname, pol.tablename);
+  END LOOP;
+END $$;
 
 ALTER TABLE profesores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE presencialidades ENABLE ROW LEVEL SECURITY;
@@ -124,37 +138,37 @@ CREATE POLICY "Lectura pública - profesor_catedra" ON profesor_catedra
 CREATE POLICY "Lectura pública - profesor_presencialidad" ON profesor_presencialidad
   FOR SELECT USING (true);
 
--- Solo admin autenticado puede modificar
+-- Solo admin autenticado puede modificar (usando auth.uid() que es más robusto)
 CREATE POLICY "Insert admin - profesores" ON profesores
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Update admin - profesores" ON profesores
-  FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+  FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Delete admin - profesores" ON profesores
-  FOR DELETE USING (auth.role() = 'authenticated');
+  FOR DELETE USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Insert admin - presencialidades" ON presencialidades
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Update admin - presencialidades" ON presencialidades
-  FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+  FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Delete admin - presencialidades" ON presencialidades
-  FOR DELETE USING (auth.role() = 'authenticated');
+  FOR DELETE USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Insert admin - catedras" ON catedras
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Update admin - catedras" ON catedras
-  FOR UPDATE USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+  FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Delete admin - catedras" ON catedras
-  FOR DELETE USING (auth.role() = 'authenticated');
+  FOR DELETE USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Insert admin - profesor_catedra" ON profesor_catedra
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Delete admin - profesor_catedra" ON profesor_catedra
-  FOR DELETE USING (auth.role() = 'authenticated');
+  FOR DELETE USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Insert admin - profesor_presencialidad" ON profesor_presencialidad
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Delete admin - profesor_presencialidad" ON profesor_presencialidad
-  FOR DELETE USING (auth.role() = 'authenticated');
+  FOR DELETE USING (auth.uid() IS NOT NULL);
 
 -- 6. FUNCIÓN PARA SELECCIÓN DIARIA DETERMINÍSTICA
 -- (Se usa desde la aplicación con hash de fecha)
