@@ -1,8 +1,16 @@
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 
+function PosicionAleatoria() {
+  const offsetX = useMemo(() => Math.floor(Math.random() * 60), [])
+  const offsetY = useMemo(() => Math.floor(Math.random() * 60), [])
+  return { offsetX, offsetY }
+}
+
 export function PanelPistas() {
   const { pistaAudioDesbloqueada, pistaImagenDesbloqueada, profesorDelDia } = useGameStore()
+  const { offsetX, offsetY } = PosicionAleatoria()
 
   return (
     <div className="flex gap-3 px-4 py-3 max-w-4xl mx-auto w-full">
@@ -44,13 +52,20 @@ export function PanelPistas() {
           {pistaImagenDesbloqueada && profesorDelDia?.imagen_pista_url ? (
             <>
               <p className="text-xs text-dark-400 font-medium">Pista Visual</p>
-              <div className="relative w-20 h-20 overflow-hidden rounded-lg border border-dark-600">
+              <div className="relative w-24 h-24 overflow-hidden rounded-lg border border-dark-600">
                 <img
                   src={profesorDelDia.imagen_pista_url}
                   alt="Pista visual del profesor"
-                  className="w-full h-full object-cover opacity-80"
+                  className="absolute"
+                  style={{
+                    width: '200%',
+                    height: '200%',
+                    maxWidth: 'none',
+                    top: `-${offsetY}%`,
+                    left: `-${offsetX}%`,
+                    opacity: 0.85,
+                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-dark-900/50" />
               </div>
             </>
           ) : (

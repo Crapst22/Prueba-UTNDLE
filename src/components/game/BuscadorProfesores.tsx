@@ -27,15 +27,19 @@ export function BuscadorProfesores() {
 
     setCargando(true)
     try {
+      const idsSeleccionados = new Set(
+        (partida?.intentos || []).map((i) => i.profesor.id)
+      )
       const profesores = await buscarProfesores(termino)
-      setResultados(profesores)
-      setMostrarDropdown(profesores.length > 0)
+      const filtrados = profesores.filter((p) => !idsSeleccionados.has(p.id))
+      setResultados(filtrados)
+      setMostrarDropdown(filtrados.length > 0)
     } catch {
       setResultados([])
     } finally {
       setCargando(false)
     }
-  }, [])
+  }, [partida])
 
   useEffect(() => {
     if (timeoutRef.current) {

@@ -6,10 +6,6 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 export function TablaResultados() {
   const { partida } = useGameStore()
 
-  if (!partida || partida.intentos.length === 0) {
-    return null
-  }
-
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-4 overflow-x-auto">
       <motion.div
@@ -29,52 +25,60 @@ export function TablaResultados() {
             </tr>
           </thead>
           <tbody>
-            {partida.intentos.map((intento, index) => (
-              <motion.tr
-                key={intento.timestamp}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="border-b border-dark-800 hover:bg-dark-800/30 transition-colors"
-              >
-                <ResultadoCelda color={intento.resultado.profesor} delay={0.1}>
-                  <div className="flex items-center gap-2">
-                    <ImageWithFallback
-                      src={intento.profesor.foto_url}
-                      alt={intento.profesor.nombre}
-                      className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                    />
-                    <span className="text-xs font-medium truncate max-w-[100px]">
-                      {intento.profesor.nombre}
+            {(!partida || partida.intentos.length === 0) ? (
+              <tr>
+                <td colSpan={6} className="text-center py-8 text-dark-500 text-sm">
+                  Seleccioná un profesor para comenzar
+                </td>
+              </tr>
+            ) : (
+              partida.intentos.map((intento, index) => (
+                <motion.tr
+                  key={intento.timestamp}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="border-b border-dark-800 hover:bg-dark-800/30 transition-colors"
+                >
+                  <ResultadoCelda color={intento.resultado.profesor} delay={0.1}>
+                    <div className="flex items-center gap-2">
+                      <ImageWithFallback
+                        src={intento.profesor.foto_url}
+                        alt={intento.profesor.nombre}
+                        className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                      />
+                      <span className="text-xs font-medium truncate max-w-[100px]">
+                        {intento.profesor.nombre}
+                      </span>
+                    </div>
+                  </ResultadoCelda>
+
+                  <ResultadoCelda color={intento.resultado.catedras} delay={0.2}>
+                    <span className="text-xs leading-tight line-clamp-2">
+                      {intento.profesor.catedras.map((c) => c.nombre).join(', ')}
                     </span>
-                  </div>
-                </ResultadoCelda>
+                  </ResultadoCelda>
 
-                <ResultadoCelda color={intento.resultado.catedras} delay={0.2}>
-                  <span className="text-xs leading-tight line-clamp-2">
-                    {intento.profesor.catedras.map((c) => c.nombre).join(', ')}
-                  </span>
-                </ResultadoCelda>
+                  <ResultadoCelda color={intento.resultado.presencialidad} delay={0.3}>
+                    <span className="text-xs">
+                      {intento.profesor.presencialidades.map((p) => p.nombre).join(', ')}
+                    </span>
+                  </ResultadoCelda>
 
-                <ResultadoCelda color={intento.resultado.presencialidad} delay={0.3}>
-                  <span className="text-xs">
-                    {intento.profesor.presencialidades.map((p) => p.nombre).join(', ')}
-                  </span>
-                </ResultadoCelda>
+                  <ResultadoCelda color={intento.resultado.legajo} delay={0.4}>
+                    <span className="font-mono text-xs">{intento.profesor.legajo}</span>
+                  </ResultadoCelda>
 
-                <ResultadoCelda color={intento.resultado.legajo} delay={0.4}>
-                  <span className="font-mono text-xs">{intento.profesor.legajo}</span>
-                </ResultadoCelda>
+                  <ResultadoCelda color={intento.resultado.jefe_catedra} delay={0.5}>
+                    <span className="text-xs">{intento.profesor.jefe_catedra ? 'Sí' : 'No'}</span>
+                  </ResultadoCelda>
 
-                <ResultadoCelda color={intento.resultado.jefe_catedra} delay={0.5}>
-                  <span className="text-xs">{intento.profesor.jefe_catedra ? 'Sí' : 'No'}</span>
-                </ResultadoCelda>
-
-                <ResultadoCelda color={intento.resultado.edad} delay={0.6}>
-                  <span className="font-mono text-xs">{intento.profesor.edad}</span>
-                </ResultadoCelda>
-              </motion.tr>
-            ))}
+                  <ResultadoCelda color={intento.resultado.edad} delay={0.6}>
+                    <span className="font-mono text-xs">{intento.profesor.edad}</span>
+                  </ResultadoCelda>
+                </motion.tr>
+              ))
+            )}
           </tbody>
         </table>
       </motion.div>
