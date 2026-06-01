@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "esnext",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+    "strict": true,
+    "jsx": "react-jsx",
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+
+    /* Paths - with deprecation override for TS 6.x */
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    /* Linting */
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"]
+}
