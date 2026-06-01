@@ -66,7 +66,7 @@ export function ResultadoCelda({ color, valor, children, delay = 0, esFoto = fal
                 <>
                   <span>{valor}</span>
                   {color === 'subida' && (
-                    <motion.svg className="w-4 h-4 shrink-0 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    <motion.svg className="w-4 h-4 shrink-0 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                       initial={{ y: 4, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: delay + 0.3, type: 'spring', stiffness: 300 }}
