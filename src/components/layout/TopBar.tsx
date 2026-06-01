@@ -9,12 +9,21 @@ export function TopBar() {
 
   return (
     <header className="relative z-40">
+      {user && (
+        <a
+          href="/admin"
+          className="fixed top-3 left-3 z-50 text-xs text-white/60 hover:text-yellow-300 transition-colors px-2 py-1 rounded bg-white/5 backdrop-blur-sm"
+        >
+          Admin
+        </a>
+      )}
       <div className="max-w-4xl mx-auto px-4 pt-6 pb-2 flex flex-col items-center">
         <div className="flex items-center gap-3 mb-1">
-          <svg viewBox="0 0 100 100" className="w-10 h-10 drop-shadow-lg">
-            <rect width="100" height="100" rx="16" fill="#facc15" />
-            <text x="50" y="68" fontFamily="Arial, sans-serif" fontSize="52" fontWeight="bold" fill="#1e293b" textAnchor="middle">UTN</text>
-          </svg>
+          <img
+            src="/iconos/logo-utn.png"
+            alt="Logo UTN"
+            className="w-10 h-10 object-contain drop-shadow-lg"
+          />
           <h1 className="text-4xl font-extrabold tracking-wider gradient-text drop-shadow-lg">
             UTNDLE
           </h1>
@@ -23,17 +32,7 @@ export function TopBar() {
           Facultad Regional de Villa María
         </p>
 
-        <div className="flex items-center gap-3 mt-4 w-full justify-between">
-          <div className="flex items-center gap-2">
-            {user && (
-              <a
-                href="/admin"
-                className="text-xs text-white/60 hover:text-yellow-300 transition-colors px-2 py-1 rounded bg-white/5"
-              >
-                Admin
-              </a>
-            )}
-          </div>
+        <div className="flex items-center gap-3 mt-4 w-full justify-end">
 
           <div className="flex items-center gap-3">
             {racha > 0 && (

@@ -51,10 +51,8 @@ function guardarEstadisticas(stats: Estadisticas) {
 }
 
 function compararProfesores(buscado: Profesor, correcto: Profesor): ResultadoComparacion {
-  const esCorrecto = buscado.id === correcto.id
-
   const resultado: ResultadoComparacion = {
-    profesor: esCorrecto ? 'verde' : 'rojo',
+    profesor: buscado.id === correcto.id ? 'verde' : 'rojo',
     catedras: 'rojo',
     presencialidad: 'rojo',
     legajo: 'rojo',
@@ -62,25 +60,35 @@ function compararProfesores(buscado: Profesor, correcto: Profesor): ResultadoCom
     edad: 'rojo',
   }
 
-  const catedrasBuscado = buscado.catedras.map((c) => c.nombre.toLowerCase())
-  const catedrasCorrecto = correcto.catedras.map((c) => c.nombre.toLowerCase())
-  const comparteCatedra = catedrasBuscado.some((c) => catedrasCorrecto.includes(c))
-  if (comparteCatedra) resultado.catedras = esCorrecto ? 'verde' : 'amarillo'
+  const catedrasBuscado = buscado.catedras.map((c) => c.nombre.toLowerCase()).sort()
+  const catedrasCorrecto = correcto.catedras.map((c) => c.nombre.toLowerCase()).sort()
+  const mismasCatedras = catedrasBuscado.length === catedrasCorrecto.length && catedrasBuscado.every((c, i) => c === catedrasCorrecto[i])
+  if (mismasCatedras) {
+    resultado.catedras = 'verde'
+  } else {
+    const comparteCatedra = catedrasBuscado.some((c) => catedrasCorrecto.includes(c))
+    if (comparteCatedra) resultado.catedras = 'amarillo'
+  }
 
-  const presBuscado = buscado.presencialidades.map((p) => p.nombre.toLowerCase())
-  const presCorrecto = correcto.presencialidades.map((p) => p.nombre.toLowerCase())
-  const presCoincide = presBuscado.some((p) => presCorrecto.includes(p))
-  if (presCoincide) resultado.presencialidad = esCorrecto ? 'verde' : 'amarillo'
-
-  if (buscado.legajo > correcto.legajo) resultado.legajo = 'bajada'
-  else if (buscado.legajo < correcto.legajo) resultado.legajo = 'subida'
-  else resultado.legajo = esCorrecto ? 'verde' : 'amarillo'
-
-  if (buscado.jefe_catedra === correcto.jefe_catedra) resultado.jefe_catedra = esCorrecto ? 'verde' : 'amarillo'
+  const presBuscado = buscado.presencialidades.map((p) => p.nombre.toLowerCase()).sort()
+  const presCorrecto = correcto.presencialidades.map((p) => p.nombre.toLowerCase()).sort()
+  const mismasPres = presBuscado.length === presCorrecto.length && presBuscado.every((p, i) => p === presCorrecto[i])
+  if (mismasPres) {
+    resultado.presencialidad = 'verde'
+  } else {
+    const presCoincide = presBuscado.some((p) => presCorrecto.includes(p))
+    if (presCoincide) resultado.presencialidad = 'amarillo'
+  }
 
   if (buscado.edad > correcto.edad) resultado.edad = 'bajada'
   else if (buscado.edad < correcto.edad) resultado.edad = 'subida'
-  else resultado.edad = esCorrecto ? 'verde' : 'amarillo'
+  else resultado.edad = 'verde'
+
+  resultado.jefe_catedra = buscado.jefe_catedra === correcto.jefe_catedra ? 'verde' : 'rojo'
+
+  if (buscado.legajo > correcto.legajo) resultado.legajo = 'bajada'
+  else if (buscado.legajo < correcto.legajo) resultado.legajo = 'subida'
+  else resultado.legajo = 'verde'
 
   return resultado
 }

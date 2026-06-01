@@ -72,7 +72,7 @@ export function BuscadorProfesores() {
   }, [])
 
   const handleSelect = (profesor: Profesor) => {
-    setTermino(profesor.nombre)
+    setTermino('')
     setSeleccionado(true)
     setMostrarDropdown(false)
     realizarIntento(profesor)
