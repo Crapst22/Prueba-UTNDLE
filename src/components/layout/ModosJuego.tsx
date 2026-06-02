@@ -9,7 +9,7 @@ const modos = [
 
 export function ModosJuego() {
   return (
-    <div className="grid grid-cols-4 gap-3 px-4 max-w-4xl mx-auto w-full mt-5">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 px-4 max-w-4xl mx-auto w-full mt-5">
       {modos.map((modo) => (
         <motion.button
           key={modo.id}

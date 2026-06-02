@@ -78,16 +78,18 @@ export function TablaResultados() {
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-4">
-      <div className="grid grid-cols-6 gap-2 mb-2">
+      <div className="overflow-x-auto -mx-4 px-4 pb-2">
+        <div className="min-w-[500px]">
+      <div className="grid grid-cols-6 gap-1.5 sm:gap-2 mb-2">
         {columnas.map((col) => (
           <div key={col.id} className="flex items-center justify-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-dark-400/70">
             {col.icono}
-            {col.label}
+            <span className="hidden sm:inline">{col.label}</span>
           </div>
         ))}
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-1.5 sm:space-y-2">
         {intentos.map((intento, index) => {
           const rowDelay = (intentos.length - 1 - index) * 0.08
 
@@ -97,7 +99,7 @@ export function TablaResultados() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: rowDelay }}
-              className="grid grid-cols-6 gap-2"
+              className="grid grid-cols-6 gap-1.5 sm:gap-2"
             >
               <ResultadoCelda
                 color={intento.resultado.profesor}
@@ -155,6 +157,8 @@ export function TablaResultados() {
           <p className="text-[#22c55e]/80 text-sm">Adivinaste el profesor en {partida.intentos.length} {partida.intentos.length === 1 ? 'intento' : 'intentos'}</p>
         </motion.div>
       )}
+        </div>
+      </div>
     </div>
   )
 }

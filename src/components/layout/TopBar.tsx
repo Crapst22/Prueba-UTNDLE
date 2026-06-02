@@ -17,14 +17,14 @@ export function TopBar() {
           Admin
         </a>
       )}
-      <div className="max-w-4xl mx-auto px-4 pt-6 pb-2 flex flex-col items-center">
-        <div className="flex items-center gap-3 mb-1">
+      <div className="max-w-4xl mx-auto px-4 pt-4 sm:pt-6 pb-2 flex flex-col items-center">
+        <div className="flex items-center gap-2 sm:gap-3 mb-1">
           <img
             src="/iconos/logo-utn.png"
             alt="Logo UTN"
-            className="w-10 h-10 object-contain drop-shadow-lg"
+            className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-lg"
           />
-          <h1 className="text-4xl font-extrabold tracking-wider gradient-text drop-shadow-lg">
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-wider gradient-text drop-shadow-lg">
             UTNDLE
           </h1>
         </div>

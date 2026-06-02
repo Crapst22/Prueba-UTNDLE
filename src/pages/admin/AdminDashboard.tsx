@@ -80,42 +80,42 @@ export function AdminDashboard() {
       <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
       <div className="fixed inset-0 bg-black/40" />
       <header className="relative z-40 border-b border-dark-700/50 bg-dark-900/80 backdrop-blur-md sticky top-0">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <a href="/" className="text-sm text-dark-400 hover:text-primary-400 transition-colors">
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 h-auto min-h-14 py-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <a href="/" className="text-sm text-dark-400 hover:text-primary-400 transition-colors whitespace-nowrap">
               ← Juego
             </a>
             <h1 className="text-lg font-bold gradient-text">Admin</h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto">
             <span className="text-xs text-dark-400 hidden sm:inline">{user.email}</span>
             <button
               onClick={() => navigate('/admin/configuracion')}
-              className="btn-secondary text-xs py-1.5 px-3"
+              className="btn-secondary text-xs py-1 px-2 sm:py-1.5 sm:px-3"
             >
               Configuración
             </button>
             <button
               onClick={() => navigate('/admin/nuevo')}
-              className="btn-primary text-xs py-1.5 px-3"
+              className="btn-primary text-xs py-1 px-2 sm:py-1.5 sm:px-3"
             >
-              + Nuevo Profesor
+              + Nuevo
             </button>
             <button
               onClick={handleReiniciar}
-              className="btn-secondary text-xs py-1.5 px-3 border-red-500/30 text-red-400 hover:bg-red-500/10"
+              className="btn-secondary text-xs py-1 px-2 sm:py-1.5 sm:px-3 border-red-500/30 text-red-400 hover:bg-red-500/10"
             >
-              Reiniciar Partida
+              Reiniciar
             </button>
             <button
               onClick={handleCambiarProfesor}
-              className="btn-secondary text-xs py-1.5 px-3 border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+              className="btn-secondary text-xs py-1 px-2 sm:py-1.5 sm:px-3 border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
             >
-              Cambiar Profesor
+              Cambiar
             </button>
             <button
               onClick={handleLogout}
-              className="btn-secondary text-xs py-1.5 px-3"
+              className="btn-secondary text-xs py-1 px-2 sm:py-1.5 sm:px-3"
             >
               Salir
             </button>
@@ -123,7 +123,7 @@ export function AdminDashboard() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-6 relative z-10">
+      <main className="max-w-6xl mx-auto px-2 sm:px-4 py-4 sm:py-6 relative z-10">
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}

@@ -205,18 +205,18 @@ export function AdminProfesorForm() {
       <div className="fixed inset-0 bg-black/40 pointer-events-none" />
       <header className="relative z-40 border-b border-dark-700/50 bg-dark-900/80 backdrop-blur-md sticky top-0">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <a href="/admin" className="text-sm text-dark-400 hover:text-primary-400 transition-colors">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <a href="/admin" className="text-sm text-dark-400 hover:text-primary-400 transition-colors whitespace-nowrap">
               ← Volver
             </a>
-            <h1 className="text-lg font-bold gradient-text">
+            <h1 className="text-base sm:text-lg font-bold gradient-text truncate">
               {isEditing ? 'Editar Profesor' : 'Nuevo Profesor'}
             </h1>
           </div>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-6 relative z-10">
+      <main className="max-w-3xl mx-auto px-4 py-4 sm:py-6 relative z-10">
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -242,7 +242,7 @@ export function AdminProfesorForm() {
               {errors.nombre && <p className="text-red-400 text-xs mt-1">{errors.nombre.message}</p>}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-dark-300 mb-1">Fecha de nacimiento</label>
                 <input
