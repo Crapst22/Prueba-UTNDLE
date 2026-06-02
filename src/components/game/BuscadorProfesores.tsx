@@ -93,11 +93,11 @@ export function BuscadorProfesores() {
   }
 
   return (
-    <div className="relative px-4 max-w-4xl mx-auto w-full">
-      <form onSubmit={handleSubmit} className="relative">
-        <div className="relative">
+    <div className="relative px-4 max-w-4xl mx-auto w-full mt-5">
+      <form onSubmit={handleSubmit} className="relative flex items-center gap-3">
+        <div className="relative flex-1">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-dark-400"
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-yellow-400/70"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -110,9 +110,9 @@ export function BuscadorProfesores() {
             value={termino}
             onChange={handleInputChange}
             onFocus={() => termino.length > 0 && resultados.length > 0 && setMostrarDropdown(true)}
-            placeholder="Escribí el nombre del profesor..."
+            placeholder="Escribe el nombre del profesor..."
             disabled={deshabilitado}
-            className={`input w-full pl-10 pr-4 py-3 text-sm ${deshabilitado ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`game-input w-full pl-12 pr-4 ${deshabilitado ? 'opacity-50 cursor-not-allowed' : ''}`}
             autoComplete="off"
             aria-label="Buscar profesor"
             role="combobox"
@@ -120,11 +120,24 @@ export function BuscadorProfesores() {
             aria-controls="resultados-busqueda"
           />
           {cargando && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <div className="w-4 h-4 border-2 border-dark-500 border-t-primary-500 rounded-full animate-spin" />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+              <div className="w-5 h-5 border-2 border-white/30 border-t-yellow-400 rounded-full animate-spin" />
             </div>
           )}
         </div>
+
+        <motion.button
+          type="submit"
+          disabled={deshabilitado || termino.length === 0}
+          className="gold-btn w-14 h-14 flex items-center justify-center shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Enviar"
+        >
+          <svg className="w-6 h-6 text-yellow-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </motion.button>
       </form>
 
       <AnimatePresence>
@@ -132,7 +145,13 @@ export function BuscadorProfesores() {
           <motion.div
             ref={dropdownRef}
             id="resultados-busqueda"
-            className="absolute left-4 right-4 top-full mt-1 bg-dark-800 border border-dark-600 rounded-xl shadow-xl overflow-hidden z-30"
+            className="absolute left-4 right-20 top-full mt-2 rounded-2xl overflow-hidden z-30"
+            style={{
+              background: 'rgba(15, 23, 42, 0.95)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(250, 204, 21, 0.3)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+            }}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -142,22 +161,22 @@ export function BuscadorProfesores() {
               <button
                 key={profesor.id}
                 onClick={() => handleSelect(profesor)}
-                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-dark-700 transition-colors text-left border-b border-dark-700 last:border-0"
+                className="w-full flex items-center gap-3 px-4 py-3 text-left border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors"
               >
                 <ImageWithFallback
                   src={profesor.foto_url}
                   alt={profesor.nombre}
-                  className="w-9 h-9 rounded-full object-cover flex-shrink-0"
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0 ring-2 ring-yellow-400/30"
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-white truncate">
+                  <p className="text-sm font-semibold text-white truncate">
                     {profesor.nombre}
                   </p>
-                  <p className="text-xs text-dark-400 truncate">
+                  <p className="text-xs text-white/50 truncate">
                     {profesor.catedras.map((c) => c.nombre).join(', ')}
                   </p>
                 </div>
-                <svg className="w-4 h-4 text-dark-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-yellow-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>

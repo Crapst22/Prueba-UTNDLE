@@ -15,24 +15,24 @@ export function ModalEstadisticas() {
     >
       <div className="grid grid-cols-4 gap-4 mb-6">
         <div className="text-center">
-          <p className="text-2xl font-bold">{estadisticas.partidasJugadas}</p>
-          <p className="text-xs text-dark-400">Jugadas</p>
+          <p className="text-2xl font-bold text-yellow-400">{estadisticas.partidasJugadas}</p>
+          <p className="text-xs text-white/50">Jugadas</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold">{porcentaje}</p>
-          <p className="text-xs text-dark-400">% Victoria</p>
+          <p className="text-2xl font-bold text-yellow-400">{porcentaje}</p>
+          <p className="text-xs text-white/50">% Victoria</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold">{estadisticas.rachaActual}</p>
-          <p className="text-xs text-dark-400">Racha</p>
+          <p className="text-2xl font-bold text-yellow-400">{estadisticas.rachaActual}</p>
+          <p className="text-xs text-white/50">Racha</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold">{estadisticas.mejorRacha}</p>
-          <p className="text-xs text-dark-400">Mejor</p>
+          <p className="text-2xl font-bold text-yellow-400">{estadisticas.mejorRacha}</p>
+          <p className="text-xs text-white/50">Mejor</p>
         </div>
       </div>
 
-      <h3 className="text-sm font-semibold text-dark-300 mb-3">Distribución de intentos</h3>
+      <h3 className="text-sm font-semibold text-white/70 mb-3">Distribución de intentos</h3>
       <div className="space-y-1.5">
         {[1, 2, 3, 4, 5, 6].map((num) => {
           const count = estadisticas.distribucionIntentos[num] || 0
@@ -41,13 +41,16 @@ export function ModalEstadisticas() {
 
           return (
             <div key={num} className="flex items-center gap-2">
-              <span className="text-xs text-dark-400 w-4 text-right">{num}</span>
-              <div className="flex-1 bg-dark-700 rounded-full h-5 overflow-hidden">
+              <span className="text-xs text-white/50 w-4 text-right">{num}</span>
+              <div className="flex-1 rounded-full h-5 overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
                 <div
-                  className="bg-primary-600 h-full rounded-full flex items-center justify-end px-2 transition-all duration-500"
-                  style={{ width: `${Math.max(width, count > 0 ? 10 : 0)}%` }}
+                  className="h-full rounded-full flex items-center justify-end px-2 transition-all duration-500"
+                  style={{
+                    width: `${Math.max(width, count > 0 ? 10 : 0)}%`,
+                    background: 'linear-gradient(90deg, #eab308, #facc15)',
+                  }}
                 >
-                  <span className="text-xs font-bold text-white">{count}</span>
+                  <span className="text-xs font-bold text-yellow-900">{count}</span>
                 </div>
               </div>
             </div>

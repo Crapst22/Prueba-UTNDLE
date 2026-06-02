@@ -1,42 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: #fefce8;
-  --color-primary-100: #fef9c3;
-  --color-primary-200: #fef08a;
-  --color-primary-300: #fde047;
-  --color-primary-400: #facc15;
-  --color-primary-500: #eab308;
-  --color-primary-600: #ca8a04;
-  --color-primary-700: #a16207;
-  --color-primary-800: #854d0e;
-  --color-primary-900: #713f12;
+  --color-gold-50: #fffdf0;
+  --color-gold-100: #fff9d6;
+  --color-gold-200: #fff3a8;
+  --color-gold-300: #ffec6e;
+  --color-gold-400: #fde047;
+  --color-gold-500: #facc15;
+  --color-gold-600: #eab308;
+  --color-gold-700: #ca8a04;
+  --color-gold-800: #a16207;
+  --color-gold-900: #713f12;
 
   --color-dark-50: #f8fafc;
   --color-dark-100: #f1f5f9;
   --color-dark-200: #e2e8f0;
   --color-dark-300: #cbd5e1;
-  --color-dark-400: #e2e8f0;
-  --color-dark-500: #cbd5e1;
+  --color-dark-400: #94a3b8;
+  --color-dark-500: #64748b;
   --color-dark-600: #475569;
   --color-dark-700: #334155;
   --color-dark-800: #1e293b;
   --color-dark-900: #0f172a;
   --color-dark-950: #020617;
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 @layer base {
   * {
-    border-color: var(--color-dark-700);
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
   body {
     background-color: var(--color-dark-950);
-    color: var(--color-dark-50);
+    color: white;
     font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
   }
 
   ::-webkit-scrollbar {
@@ -44,83 +49,103 @@
   }
 
   ::-webkit-scrollbar-track {
-    background-color: var(--color-dark-900);
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: var(--color-dark-600);
+    background-color: rgba(255, 255, 255, 0.2);
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-dark-500);
+    background-color: rgba(255, 255, 255, 0.3);
   }
 }
 
 @layer components {
-  .card {
-    background-color: color-mix(in srgb, var(--color-dark-800) 70%, transparent);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--color-dark-700);
-    border-radius: 0.75rem;
-    padding: 1rem;
+  .glass-panel {
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
   }
 
-  .btn-primary {
-    background-color: var(--color-primary-500);
-    color: var(--color-dark-950);
-    font-weight: 700;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
+  .game-card {
+    background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 1.25rem;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 40px rgba(250, 204, 21, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
-  .btn-primary:hover {
-    background-color: var(--color-primary-400);
+  .gold-btn {
+    background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+    border-radius: 9999px;
+    box-shadow:
+      0 4px 15px rgba(250, 204, 21, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
   }
 
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  .gold-btn:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 6px 20px rgba(250, 204, 21, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
-  .btn-secondary {
-    background-color: var(--color-dark-700);
-    color: var(--color-dark-100);
-    font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
+  .gold-btn:active {
+    transform: translateY(0);
+    box-shadow:
+      0 2px 10px rgba(250, 204, 21, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
-  .btn-secondary:hover {
-    background-color: var(--color-dark-600);
+  .gold-border-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #facc15;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
   }
 
-  .input {
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 0.75rem;
-    padding: 0.75rem 1rem;
+  .gold-border-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(250, 204, 21, 0.3);
+  }
+
+  .gold-border-btn.active {
+    background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+    box-shadow:
+      0 4px 20px rgba(250, 204, 21, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .game-input {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #facc15;
+    border-radius: 9999px;
     color: white;
+    padding: 0.875rem 1.5rem;
     outline: none;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     backdrop-filter: blur(4px);
   }
 
-  .input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+  .game-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
   }
 
-  .input:focus {
-    border-color: var(--color-primary-400);
-    box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.2);
-    background-color: rgba(255, 255, 255, 0.2);
+  .game-input:focus {
+    border-color: #fde047;
+    box-shadow: 0 0 20px rgba(250, 204, 21, 0.2);
+    background: rgba(0, 0, 0, 0.7);
   }
 }
 
 @utility text-shadow {
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 @utility gradient-text {
@@ -128,4 +153,76 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+@keyframes card-reveal {
+  0% {
+    transform: rotateY(180deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce-arrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes bounce-arrow-down {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(250, 204, 21, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(250, 204, 21, 0.4);
+  }
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card-reveal {
+  animation: card-reveal 0.6s ease-out forwards;
+}
+
+.animate-bounce-arrow {
+  animation: bounce-arrow 0.5s ease-in-out infinite;
+}
+
+.animate-bounce-arrow-down {
+  animation: bounce-arrow-down 0.5s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-float-up {
+  animation: float-up 0.4s ease-out forwards;
 }

@@ -26,77 +26,56 @@ export function PanelPistas() {
 
   return (
     <>
-    <div className="flex gap-3 px-4 py-3 max-w-4xl mx-auto w-full">
-      <div className="flex-1">
-        <motion.div
-          className={`card h-28 flex flex-col items-center justify-center gap-2 ${!pistaAudioDesbloqueada ? 'opacity-50' : ''}`}
-          whileHover={pistaAudioDesbloqueada ? { scale: 1.02 } : {}}
-        >
-          {pistaAudioDesbloqueada && profesorDelDia?.audio_pista_url ? (
-            <>
-              <p className="text-xs text-dark-400 font-medium">Pista de Voz</p>
-              <audio
-                controls
-                src={profesorDelDia.audio_pista_url}
-                className="w-full max-w-[200px] h-8"
-                preload="none"
-              >
-                Tu navegador no soporta audio.
-              </audio>
-            </>
-          ) : (
-            <>
-              <svg className="w-8 h-8 text-dark-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-              <p className="text-xs text-dark-500 font-medium">
-                Se desbloquea en el intento #3
-              </p>
-            </>
-          )}
-        </motion.div>
-      </div>
+      <div className="px-4 max-w-4xl mx-auto w-full mt-5">
+        <div className="game-card p-6 sm:p-8">
+          <h2 className="text-center text-lg sm:text-xl font-extrabold text-yellow-900 drop-shadow-sm mb-6">
+            ¡Adivina el profesor de la FRVM de hoy!
+          </h2>
 
-      <div className="flex-1">
-        <motion.div
-          className={`card h-28 flex flex-col items-center justify-center gap-2 ${!pistaImagenDesbloqueada ? 'opacity-50' : ''}`}
-          whileHover={pistaImagenDesbloqueada ? { scale: 1.02 } : {}}
-        >
-          {pistaImagenDesbloqueada && profesorDelDia?.imagen_pista_url ? (
-            <>
-              <p className="text-xs text-dark-400 font-medium">Pista Visual</p>
-              <div
-                className="relative w-24 h-24 overflow-hidden rounded-lg border border-dark-600 cursor-pointer"
-                onClick={() => setImagenExpandida(true)}
-              >
-                <img
-                  src={profesorDelDia.imagen_pista_url}
-                  alt="Pista visual del profesor"
-                  className="absolute pointer-events-none"
-                  style={{
-                    width: '250%',
-                    height: '250%',
-                    maxWidth: 'none',
-                    top: `-${offsetY * 3}%`,
-                    left: `-${offsetX * 3}%`,
-                    opacity: 0.85,
-                  }}
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <svg className="w-8 h-8 text-dark-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          <div className="flex justify-center gap-6 sm:gap-10">
+            <motion.button
+              className={`flex flex-col items-center gap-2 w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 bg-white ${
+                pistaAudioDesbloqueada ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
+              }`}
+              style={{ borderColor: '#facc15' }}
+              whileHover={pistaAudioDesbloqueada ? { scale: 1.05, boxShadow: '0 0 25px rgba(250,204,21,0.4)' } : {}}
+              onClick={() => {
+                if (pistaAudioDesbloqueada && profesorDelDia?.audio_pista_url) {
+                  const audio = new Audio(profesorDelDia.audio_pista_url)
+                  audio.play()
+                }
+              }}
+            >
+              <svg className="w-10 h-10 text-yellow-500 mt-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
               </svg>
-              <p className="text-xs text-dark-500 font-medium">
-                Se desbloquea en el intento #5
-              </p>
-            </>
-          )}
-        </motion.div>
+              <span className="text-xs font-bold text-gray-700">Pista de voz</span>
+              {!pistaAudioDesbloqueada && (
+                <span className="text-[10px] text-gray-400 -mt-1">#3</span>
+              )}
+            </motion.button>
+
+            <motion.button
+              className={`flex flex-col items-center gap-2 w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 bg-white ${
+                pistaImagenDesbloqueada ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
+              }`}
+              style={{ borderColor: '#facc15' }}
+              whileHover={pistaImagenDesbloqueada ? { scale: 1.05, boxShadow: '0 0 25px rgba(250,204,21,0.4)' } : {}}
+              onClick={() => {
+                if (pistaImagenDesbloqueada) setImagenExpandida(true)
+              }}
+            >
+              <svg className="w-10 h-10 text-yellow-500 mt-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="text-xs font-bold text-gray-700">Pista de foto</span>
+              {!pistaImagenDesbloqueada && (
+                <span className="text-[10px] text-gray-400 -mt-1">#5</span>
+              )}
+            </motion.button>
+          </div>
+        </div>
       </div>
-    </div>
 
       <AnimatePresence>
         {imagenExpandida && (
@@ -108,11 +87,12 @@ export function PanelPistas() {
             onClick={() => setImagenExpandida(false)}
           >
             <motion.div
-              className="relative w-[80vmin] h-[80vmin] overflow-hidden rounded-2xl border border-dark-600 shadow-2xl bg-black/40"
+              className="relative w-[80vmin] h-[80vmin] overflow-hidden rounded-2xl border-2 border-yellow-400 shadow-2xl"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
               onClick={(e) => e.stopPropagation()}
+              style={{ background: 'rgba(0,0,0,0.4)' }}
             >
               <img
                 src={profesorDelDia!.imagen_pista_url}

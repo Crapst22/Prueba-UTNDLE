@@ -10,47 +10,51 @@ export function ModalAyuda() {
       onClose={() => setMostrarAyuda(false)}
       title="¿Cómo jugar?"
     >
-      <div className="space-y-4 text-sm text-dark-200">
+      <div className="space-y-4 text-sm text-white/70">
         <p>
           Adiviná el <strong className="text-white">profesor del día</strong> de la UTN.
           Todos los días hay un profesor nuevo para adivinar.
         </p>
 
         <div className="space-y-3">
-          <h4 className="font-semibold text-white">Pistas</h4>
+          <h4 className="font-semibold text-yellow-400">Pistas</h4>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-1 rounded bg-dark-700 text-xs">🎵 Audio</span>
-            <span className="text-dark-400">→ Se desbloquea en intento #3</span>
+            <span className="px-2 py-1 rounded text-xs font-bold text-yellow-900" style={{ background: 'linear-gradient(135deg, #facc15, #eab308)' }}>
+              🎵 Audio
+            </span>
+            <span className="text-white/50">→ Se desbloquea en intento #3</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-1 rounded bg-dark-700 text-xs">🖼️ Imagen</span>
-            <span className="text-dark-400">→ Se desbloquea en intento #5</span>
+            <span className="px-2 py-1 rounded text-xs font-bold text-yellow-900" style={{ background: 'linear-gradient(135deg, #facc15, #eab308)' }}>
+              🖼️ Imagen
+            </span>
+            <span className="text-white/50">→ Se desbloquea en intento #5</span>
           </div>
         </div>
 
         <div className="space-y-2">
-          <h4 className="font-semibold text-white">Colores</h4>
+          <h4 className="font-semibold text-yellow-400">Colores</h4>
           <div className="flex items-center gap-2">
-            <span className="w-5 h-5 rounded bg-green-600" />
+            <span className="w-5 h-5 rounded" style={{ background: '#22c55e' }} />
             <span>Coincidencia exacta</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-5 h-5 rounded bg-red-600/80" />
+            <span className="w-5 h-5 rounded" style={{ background: '#fbbf24' }} />
+            <span>Coincidencia parcial</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-5 h-5 rounded" style={{ background: '#ef4444' }} />
             <span>No coincide</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-5 h-5 rounded bg-dark-600 flex items-center justify-center">
-              <svg className="w-3 h-3 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-              </svg>
+            <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ background: '#475569', color: '#4ade80' }}>
+              ↑
             </span>
             <span>El valor correcto es mayor</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="w-5 h-5 rounded bg-dark-600 flex items-center justify-center">
-              <svg className="w-3 h-3 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
+            <span className="w-5 h-5 rounded flex items-center justify-center text-xs font-bold" style={{ background: '#475569', color: '#f87171' }}>
+              ↓
             </span>
             <span>El valor correcto es menor</span>
           </div>
