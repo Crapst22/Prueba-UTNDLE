@@ -24,28 +24,30 @@ export function BarraInfo() {
           <span className="text-sm font-semibold text-yellow-900 hidden sm:inline">Estadísticas</span>
         </button>
 
-        <div className="flex items-center gap-3">
+        <motion.div
+          className="relative flex items-center justify-center"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', damping: 10, stiffness: 200 }}
+        >
           <motion.span
-            className="text-lg"
+            className="text-4xl sm:text-5xl"
             initial={{ rotate: 0 }}
-            animate={{ rotate: [0, 10, -10, 0] }}
+            animate={{ rotate: [0, 8, -8, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
           >
             🔥
           </motion.span>
-          <div className="flex items-baseline gap-1">
-            <motion.span
-              className="text-3xl font-black text-yellow-900"
-              key={racha}
-              initial={{ scale: 1.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', damping: 10, stiffness: 200 }}
-            >
-              {racha}
-            </motion.span>
-            <span className="text-sm font-semibold text-yellow-900/70">racha</span>
-          </div>
-        </div>
+          <motion.span
+            className="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-black text-yellow-900 pt-0.5 sm:pt-1"
+            key={racha}
+            initial={{ scale: 1.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', damping: 10, stiffness: 200 }}
+          >
+            {racha}
+          </motion.span>
+        </motion.div>
 
         <button
           onClick={() => setMostrarAyuda(true)}

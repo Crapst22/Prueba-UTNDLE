@@ -13,14 +13,14 @@ export function ModosJuego() {
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-5">
-      <div className="flex justify-center gap-3 sm:gap-5">
+      <div className="flex justify-center gap-4 sm:gap-6">
         {modos.map((modo) => {
           const isActive = activo === modo.id
           return (
             <motion.button
               key={modo.id}
               onClick={() => setActivo(modo.id)}
-              className={`flex flex-col items-center gap-2 w-20 sm:w-24 py-3 rounded-full transition-all ${
+              className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full transition-all ${
                 isActive
                   ? 'bg-gradient-to-b from-yellow-400 to-yellow-500 shadow-[0_0_20px_rgba(250,204,21,0.4)]'
                   : 'bg-white/95 border-2 border-yellow-400'
@@ -36,17 +36,10 @@ export function ModosJuego() {
               <img
                 src={modo.icon}
                 alt={modo.label}
-                className={`w-8 h-8 sm:w-10 sm:h-10 object-contain ${
+                className={`w-7 h-7 sm:w-9 sm:h-9 object-contain ${
                   isActive ? 'drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)] brightness-110' : ''
                 }`}
               />
-              <span
-                className={`text-[10px] sm:text-xs font-bold text-center leading-tight px-1 ${
-                  isActive ? 'text-yellow-900' : 'text-gray-700'
-                }`}
-              >
-                {modo.label}
-              </span>
             </motion.button>
           )
         })}
