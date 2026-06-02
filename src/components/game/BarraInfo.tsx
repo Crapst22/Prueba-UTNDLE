@@ -24,30 +24,42 @@ export function BarraInfo() {
           <span className="text-sm font-semibold text-yellow-900 hidden sm:inline">Estadísticas</span>
         </button>
 
-        <motion.div
-          className="relative flex items-center justify-center"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', damping: 10, stiffness: 200 }}
-        >
-          <motion.span
-            className="text-4xl sm:text-5xl"
-            initial={{ rotate: 0 }}
-            animate={{ rotate: [0, 8, -8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
-          >
-            🔥
-          </motion.span>
-          <motion.span
-            className="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-black text-yellow-900 pt-0.5 sm:pt-1"
-            key={racha}
-            initial={{ scale: 1.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+        <div className="flex items-center gap-2">
+          <motion.div
+            className="relative flex items-center justify-center"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
             transition={{ type: 'spring', damping: 10, stiffness: 200 }}
           >
-            {racha}
-          </motion.span>
-        </motion.div>
+            <motion.span
+              className="text-4xl sm:text-5xl block"
+              animate={{
+                scale: [1, 1.15, 1, 1.1, 1],
+                filter: [
+                  'brightness(1)',
+                  'brightness(1.3)',
+                  'brightness(1)',
+                  'brightness(1.2)',
+                  'brightness(1)',
+                ],
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ transformOrigin: 'center' }}
+            >
+              🔥
+            </motion.span>
+            <motion.span
+              className="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-black text-yellow-900 pt-0.5 sm:pt-1"
+              key={racha}
+              initial={{ scale: 1.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', damping: 10, stiffness: 200 }}
+            >
+              {racha}
+            </motion.span>
+          </motion.div>
+          <span className="text-sm font-bold text-yellow-900/80">racha</span>
+        </div>
 
         <button
           onClick={() => setMostrarAyuda(true)}
