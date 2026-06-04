@@ -205,10 +205,10 @@ CREATE POLICY "Update admin - frases" ON frases
 CREATE POLICY "Delete admin - frases" ON frases
   FOR DELETE USING (auth.uid() IS NOT NULL);
 
-CREATE POLICY "Insert admin - profesor_diario" ON profesor_diario
-  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
-CREATE POLICY "Update admin - profesor_diario" ON profesor_diario
-  FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
+CREATE POLICY "Insert público - profesor_diario" ON profesor_diario
+  FOR INSERT WITH CHECK (true);
+CREATE POLICY "Update público - profesor_diario" ON profesor_diario
+  FOR UPDATE USING (true) WITH CHECK (true);
 
 CREATE POLICY "Insert público - aciertos_diarios" ON aciertos_diarios
   FOR INSERT WITH CHECK (true);
