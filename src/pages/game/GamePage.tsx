@@ -133,6 +133,32 @@ export function GamePage() {
         {modoJuego === 'clasico' && <ModoClasico />}
         {modoJuego === 'frase' && <ModoFrase />}
         {modoJuego === 'adivina-la-foto' && <ModoFoto />}
+        {modoJuego === 'ubicacion-utn' && (
+          <div className="flex-1 flex items-center justify-center px-4">
+            <div
+              className="text-center p-10 rounded-2xl"
+              style={{
+                background: 'rgba(0,0,0,0.55)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(250,204,21,0.3)',
+              }}
+            >
+              <p
+                className="text-3xl sm:text-4xl font-bold tracking-wider"
+                style={{
+                  background: 'linear-gradient(135deg, #facc15, #eab308)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                PRÓXIMAMENTE
+              </p>
+              <p className="text-white/60 mt-4 text-sm sm:text-base">
+                Este modo estará disponible pronto.
+              </p>
+            </div>
+          </div>
+        )}
 
         <ModalEstadisticas />
         <ModalAyuda />
