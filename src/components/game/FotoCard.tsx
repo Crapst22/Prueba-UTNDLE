@@ -37,30 +37,23 @@ export function FotoCard() {
         </p>
 
         <div className="flex justify-center mb-4">
-          <div
+          <motion.div
             className="relative overflow-hidden rounded-xl"
             style={{
               width: '200px',
               height: '200px',
+              clipPath: `inset(${clipInset}%)`,
+              transition: 'clip-path 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
               boxShadow: '0 0 20px rgba(250,204,21,0.15), inset 0 0 30px rgba(0,0,0,0.3)',
             }}
           >
-            <motion.img
+            <img
               src={fotoPartida.fotoUrl || fotoPartida.pistaUrl}
               alt="Foto del profesor"
               className="w-full h-full object-cover"
-              style={{
-                clipPath: `inset(${clipInset}%)`,
-                transition: 'clip-path 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              }}
+              style={{ display: 'block' }}
             />
-            <div
-              className="absolute inset-0 rounded-xl pointer-events-none"
-              style={{
-                boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
-              }}
-            />
-          </div>
+          </motion.div>
         </div>
 
         <div className="flex justify-center mb-2">
