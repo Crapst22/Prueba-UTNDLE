@@ -37,6 +37,25 @@ CREATE TABLE IF NOT EXISTS frases (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS profesor_diario (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  fecha DATE NOT NULL,
+  modo TEXT NOT NULL,
+  profesor_id UUID NOT NULL REFERENCES profesores(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (fecha, modo)
+);
+
+CREATE TABLE IF NOT EXISTS aciertos_diarios (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  fecha DATE NOT NULL,
+  modo TEXT NOT NULL,
+  contador INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (fecha, modo)
+);
+
 CREATE TABLE IF NOT EXISTS profesor_catedra (
   profesor_id UUID NOT NULL REFERENCES profesores(id) ON DELETE CASCADE,
   catedra_id UUID NOT NULL REFERENCES catedras(id) ON DELETE CASCADE,
@@ -127,6 +146,8 @@ ALTER TABLE profesores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE presencialidades ENABLE ROW LEVEL SECURITY;
 ALTER TABLE catedras ENABLE ROW LEVEL SECURITY;
 ALTER TABLE frases ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profesor_diario ENABLE ROW LEVEL SECURITY;
+ALTER TABLE aciertos_diarios ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profesor_catedra ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profesor_presencialidad ENABLE ROW LEVEL SECURITY;
 
@@ -141,6 +162,12 @@ CREATE POLICY "Lectura pública - catedras" ON catedras
   FOR SELECT USING (true);
 
 CREATE POLICY "Lectura pública - frases" ON frases
+  FOR SELECT USING (true);
+
+CREATE POLICY "Lectura pública - profesor_diario" ON profesor_diario
+  FOR SELECT USING (true);
+
+CREATE POLICY "Lectura pública - aciertos_diarios" ON aciertos_diarios
   FOR SELECT USING (true);
 
 CREATE POLICY "Lectura pública - profesor_catedra" ON profesor_catedra
@@ -177,6 +204,16 @@ CREATE POLICY "Update admin - frases" ON frases
   FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Delete admin - frases" ON frases
   FOR DELETE USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "Insert admin - profesor_diario" ON profesor_diario
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+CREATE POLICY "Update admin - profesor_diario" ON profesor_diario
+  FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
+
+CREATE POLICY "Insert público - aciertos_diarios" ON aciertos_diarios
+  FOR INSERT WITH CHECK (true);
+CREATE POLICY "Update público - aciertos_diarios" ON aciertos_diarios
+  FOR UPDATE USING (true) WITH CHECK (true);
 
 CREATE POLICY "Insert admin - profesor_catedra" ON profesor_catedra
   FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
@@ -241,6 +278,23 @@ CREATE POLICY "Eliminar archivos - admin" ON storage.objects
 
 -- 7. FUNCIÓN PARA SELECCIÓN DIARIA DETERMINÍSTICA
 -- (Se usa desde la aplicación con hash de fecha)
+
+-- 8. FUNCIÓN PARA INCREMENTAR ACIERTOS DIARIOS
+
+CREATE OR REPLACE FUNCTION incrementar_aciertos(p_fecha DATE, p_modo TEXT)
+RETURNS INTEGER AS $$
+DECLARE
+  v_contador INTEGER;
+BEGIN
+  INSERT INTO aciertos_diarios (fecha, modo, contador)
+  VALUES (p_fecha, p_modo, 1)
+  ON CONFLICT (fecha, modo)
+  DO UPDATE SET contador = aciertos_diarios.contador + 1, updated_at = now()
+  RETURNING contador INTO v_contador;
+
+  RETURN v_contador;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- ============================================
 -- INSTRUCCIONES POST-CREACIÓN:

@@ -28,15 +28,19 @@ export function FraseBuscador() {
 
     setCargando(true)
     try {
+      const idsYaAdivinados = new Set(
+        (frasePartida?.intentosList || []).map((i) => i.profesor.id)
+      )
       const profesores = await buscarProfesores(termino)
-      setResultados(profesores)
-      setMostrarDropdown(profesores.length > 0)
+      const filtrados = profesores.filter((p) => !idsYaAdivinados.has(p.id))
+      setResultados(filtrados)
+      setMostrarDropdown(filtrados.length > 0)
     } catch {
       setResultados([])
     } finally {
       setCargando(false)
     }
-  }, [])
+  }, [frasePartida])
 
   useEffect(() => {
     if (timeoutRef.current) {

@@ -1,15 +1,19 @@
 import { useGameStore } from '@/store/gameStore'
 
 export function ProfesorAyer() {
+  const modoJuego = useGameStore((s) => s.modoJuego)
   const profesorAyer = useGameStore((s) => s.profesorAyer)
+  const profesorAyerFrase = useGameStore((s) => s.profesorAyerFrase)
 
-  if (!profesorAyer) return null
+  const profesor = modoJuego === 'clasico' ? profesorAyer : profesorAyerFrase
+
+  if (!profesor) return null
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-4 pb-8">
       <p className="text-center text-sm text-white/70">
         El profesor de ayer fue:{' '}
-        <span className="text-yellow-400 font-bold">{profesorAyer.nombre}</span>
+        <span className="text-yellow-400 font-bold">{profesor.nombre}</span>
       </p>
     </div>
   )

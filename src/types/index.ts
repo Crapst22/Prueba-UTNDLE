@@ -81,12 +81,19 @@ export interface PartidaDiaria {
   tiempoFin?: number
 }
 
+export interface IntentoFrase {
+  profesor: Profesor
+  correcto: boolean
+  timestamp: number
+}
+
 export interface FrasePartida {
   fecha: string
   fraseId: string
   profesorId: string
   adivinado: boolean
   intentos: number
+  intentosList: IntentoFrase[]
   tiempoInicio: number
   tiempoFin?: number
 }

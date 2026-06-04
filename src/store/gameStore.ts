@@ -1,11 +1,18 @@
 import { create } from 'zustand'
-import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion, FraseConProfesor, FrasePartida } from '@/types'
+import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion, FraseConProfesor, FrasePartida, IntentoFrase } from '@/types'
 import { obtenerProfesorDelDia, obtenerProfesor, obtenerProfesorAleatorio } from '@/services/profesores'
-import { obtenerFraseDelDia, obtenerFraseDelDiaAnterior, obtenerFrase } from '@/services/frases'
+import { obtenerFraseDelDia, obtenerFrase } from '@/services/frases'
+import { guardarProfesorDiario, obtenerProfesorDiario, obtenerContadorAciertos as obtenerContadorDB, incrementarContadorAciertos as incrementarContadorDB } from '@/services/diario'
 import { calcularEdad } from '@/utils/edad'
 
 function obtenerFechaKey(): string {
   return new Date().toISOString().split('T')[0]
+}
+
+function obtenerFechaAnteriorKey(): string {
+  const ayer = new Date()
+  ayer.setDate(ayer.getDate() - 1)
+  return ayer.toISOString().split('T')[0]
 }
 
 function cargarPartida(): PartidaDiaria | null {
@@ -66,41 +73,6 @@ function cargarFrasePartida(): FrasePartida | null {
 
 function guardarFrasePartida(partida: FrasePartida) {
   localStorage.setItem('utndle_frase_partida', JSON.stringify(partida))
-}
-
-function obtenerContadorAciertos(): number {
-  const key = `utndle_aciertos_${obtenerFechaKey()}`
-  try {
-    const stored = localStorage.getItem(key)
-    if (stored) return parseInt(stored, 10)
-    const base = hashFechaSimple(obtenerFechaKey(), 500) + 50
-    return base
-  } catch {
-    return 0
-  }
-}
-
-function hashFechaSimple(fecha: string, max: number): number {
-  let hash = 0
-  for (let i = 0; i < fecha.length; i++) {
-    const char = fecha.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash = hash & hash
-  }
-  return Math.abs(hash) % max
-}
-
-function incrementarContadorAciertos(): number {
-  const key = `utndle_aciertos_${obtenerFechaKey()}`
-  try {
-    const stored = localStorage.getItem(key)
-    const actual = stored ? parseInt(stored, 10) : obtenerContadorAciertos()
-    const nuevo = actual + 1
-    localStorage.setItem(key, nuevo.toString())
-    return nuevo
-  } catch {
-    return 1
-  }
 }
 
 function compararProfesores(buscado: Profesor, correcto: Profesor): ResultadoComparacion {
@@ -168,7 +140,9 @@ interface GameState {
   fraseCargando: boolean
   fraseError: string | null
   contadorAciertos: number
+  contadorAciertosFrase: number
   profesorAyer: Profesor | null
+  profesorAyerFrase: Profesor | null
   mostrarVictoriaFrase: boolean
 
   iniciarPartida: () => Promise<void>
@@ -204,8 +178,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   fraseAdivinado: false,
   fraseCargando: false,
   fraseError: null,
-  contadorAciertos: obtenerContadorAciertos(),
+  contadorAciertos: 0,
+  contadorAciertosFrase: 0,
   profesorAyer: null,
+  profesorAyerFrase: null,
   mostrarVictoriaFrase: false,
 
   iniciarPartida: async () => {
@@ -218,10 +194,16 @@ export const useGameStore = create<GameState>((set, get) => ({
         const profesor = await obtenerProfesor(partidaExistente.profesorId)
         const audioDesbloq = partidaExistente.intentos.length >= 3
         const imagenDesbloq = partidaExistente.intentos.length >= 5
+        const [contador, profesorAyer] = await Promise.all([
+          obtenerContadorDB(fecha, 'clasico'),
+          obtenerProfesorDiario(obtenerFechaAnteriorKey(), 'clasico').catch(() => null),
+        ])
         set({
           profesorDelDia: profesor,
           pistaAudioDesbloqueada: audioDesbloq,
           pistaImagenDesbloqueada: imagenDesbloq,
+          contadorAciertos: contador,
+          profesorAyer: partidaExistente.adivinado ? profesor : profesorAyer,
           cargando: false,
           mostrarVictoria: false,
         })
@@ -234,6 +216,8 @@ export const useGameStore = create<GameState>((set, get) => ({
         return
       }
 
+      await guardarProfesorDiario(fecha, 'clasico', profesor.id)
+
       const nuevaPartida: PartidaDiaria = {
         fecha,
         profesorId: profesor.id,
@@ -243,11 +227,19 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
 
       guardarPartida(nuevaPartida)
+
+      const [contador, profesorAyer] = await Promise.all([
+        obtenerContadorDB(fecha, 'clasico'),
+        obtenerProfesorDiario(obtenerFechaAnteriorKey(), 'clasico').catch(() => null),
+      ])
+
       set({
         profesorDelDia: profesor,
         partida: nuevaPartida,
         pistaAudioDesbloqueada: false,
         pistaImagenDesbloqueada: false,
+        contadorAciertos: contador,
+        profesorAyer: profesorAyer,
         cargando: false,
         mostrarVictoria: false,
       })
@@ -295,6 +287,10 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
       guardarEstadisticas(nuevasEstadisticas)
       set({ estadisticas: nuevasEstadisticas })
+
+      incrementarContadorDB(obtenerFechaKey(), 'clasico').then((nuevo) => {
+        set({ contadorAciertos: nuevo, profesorAyer: profesorDelDia })
+      })
     }
 
     if (nuevosIntentos.length >= 6 && !adivinado) {
@@ -396,10 +392,15 @@ export const useGameStore = create<GameState>((set, get) => ({
       if (partidaExistente && partidaExistente.fecha === fecha) {
         const frase = await obtenerFrase(partidaExistente.fraseId)
         if (frase) {
+          const [contador, profesorAyer] = await Promise.all([
+            obtenerContadorDB(fecha, 'frase'),
+            obtenerProfesorDiario(obtenerFechaAnteriorKey(), 'frase').catch(() => null),
+          ])
           set({
             fraseDelDia: frase,
             fraseAdivinado: partidaExistente.adivinado,
-            contadorAciertos: obtenerContadorAciertos(),
+            contadorAciertosFrase: contador,
+            profesorAyerFrase: partidaExistente.adivinado ? frase.profesor : profesorAyer,
             fraseCargando: false,
             mostrarVictoriaFrase: false,
           })
@@ -413,25 +414,31 @@ export const useGameStore = create<GameState>((set, get) => ({
         return
       }
 
+      await guardarProfesorDiario(fecha, 'frase', frase.profesor.id)
+
       const nuevaPartida: FrasePartida = {
         fecha,
         fraseId: frase.id,
         profesorId: frase.profesor.id,
         adivinado: false,
         intentos: 0,
+        intentosList: [],
         tiempoInicio: Date.now(),
       }
 
       guardarFrasePartida(nuevaPartida)
 
-      const fraseAyer = await obtenerFraseDelDiaAnterior(fecha)
+      const [contador, profesorAyer] = await Promise.all([
+        obtenerContadorDB(fecha, 'frase'),
+        obtenerProfesorDiario(obtenerFechaAnteriorKey(), 'frase').catch(() => null),
+      ])
 
       set({
         fraseDelDia: frase,
         frasePartida: nuevaPartida,
         fraseAdivinado: false,
-        contadorAciertos: obtenerContadorAciertos(),
-        profesorAyer: fraseAyer?.profesor || null,
+        contadorAciertosFrase: contador,
+        profesorAyerFrase: profesorAyer,
         fraseCargando: false,
         mostrarVictoriaFrase: false,
       })
@@ -445,11 +452,19 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!fraseDelDia || !frasePartida || frasePartida.adivinado) return
 
     const esCorrecto = profesor.id === fraseDelDia.profesor.id
+    const nuevoIntentoFrase: IntentoFrase = {
+      profesor,
+      correcto: esCorrecto,
+      timestamp: Date.now(),
+    }
+
+    const nuevosIntentosList = [...frasePartida.intentosList, nuevoIntentoFrase]
     const nuevosIntentos = frasePartida.intentos + 1
 
     const partidaActualizada: FrasePartida = {
       ...frasePartida,
       intentos: nuevosIntentos,
+      intentosList: nuevosIntentosList,
       adivinado: esCorrecto,
       tiempoFin: esCorrecto ? Date.now() : undefined,
     }
@@ -471,8 +486,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       guardarEstadisticas(nuevasEstadisticas)
       set({ estadisticas: nuevasEstadisticas })
 
-      const nuevoContador = incrementarContadorAciertos()
-      set({ contadorAciertos: nuevoContador })
+      incrementarContadorDB(obtenerFechaKey(), 'frase').then((nuevo) => {
+        set({ contadorAciertosFrase: nuevo, profesorAyerFrase: fraseDelDia.profesor })
+      })
     }
 
     set({

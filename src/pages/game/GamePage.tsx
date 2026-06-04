@@ -8,6 +8,7 @@ import { BuscadorProfesores } from '@/components/game/BuscadorProfesores'
 import { TablaResultados } from '@/components/game/TablaResultados'
 import { FraseCard } from '@/components/game/FraseCard'
 import { FraseBuscador } from '@/components/game/FraseBuscador'
+import { FraseResultados } from '@/components/game/FraseResultados'
 import { ContadorAciertos } from '@/components/game/ContadorAciertos'
 import { ProfesorAyer } from '@/components/game/ProfesorAyer'
 import { ModalEstadisticas } from '@/components/game/ModalEstadisticas'
@@ -23,6 +24,7 @@ function ModoClasico() {
       <BuscadorProfesores />
       <TablaResultados />
       <ContadorAciertos />
+      <ProfesorAyer />
       <ModalVictoria />
     </>
   )
@@ -61,6 +63,7 @@ function ModoFrase() {
     <>
       <FraseCard frase={fraseDelDia} />
       <FraseBuscador />
+      <FraseResultados />
       <ContadorAciertos />
       <ProfesorAyer />
       <ModalVictoriaFrase />
