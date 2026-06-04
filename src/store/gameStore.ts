@@ -172,7 +172,6 @@ interface GameState {
   contadorAciertosFrase: number
   profesorAyer: Profesor | null
   profesorAyerFrase: Profesor | null
-  mostrarVictoriaFrase: boolean
 
   iniciarPartida: () => Promise<void>
   realizarIntento: (profesor: Profesor) => void
@@ -188,7 +187,6 @@ interface GameState {
   realizarIntentoFrase: (profesor: Profesor) => void
   reiniciarFrasePartida: () => void
   cambiarFraseDelDia: () => Promise<void>
-  setMostrarVictoriaFrase: (mostrar: boolean) => void
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -214,7 +212,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   contadorAciertosFrase: 0,
   profesorAyer: null,
   profesorAyerFrase: null,
-  mostrarVictoriaFrase: false,
 
   iniciarPartida: async () => {
     set({ cargando: true, error: null })
@@ -426,7 +423,6 @@ export const useGameStore = create<GameState>((set, get) => ({
             contadorAciertosFrase: contador,
             profesorAyerFrase: partidaExistente.adivinado ? frase.profesor : profesorAyer,
             fraseCargando: false,
-            mostrarVictoriaFrase: partidaExistente.adivinado,
           })
           return
         }
@@ -520,11 +516,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       fraseAdivinado: esCorrecto,
     })
 
-    if (esCorrecto) {
-      setTimeout(() => {
-        set({ mostrarVictoriaFrase: true })
-      }, 800)
-    }
   },
 
   reiniciarFrasePartida: () => {
@@ -537,7 +528,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       fraseError: null,
       contadorAciertosFrase: 0,
       profesorAyerFrase: null,
-      mostrarVictoriaFrase: false,
     })
   },
 
@@ -567,12 +557,9 @@ export const useGameStore = create<GameState>((set, get) => ({
         contadorAciertosFrase: 0,
         profesorAyerFrase: null,
         fraseCargando: false,
-        mostrarVictoriaFrase: false,
       })
     } catch (err) {
       set({ fraseError: err instanceof Error ? err.message : 'Error al cambiar frase', fraseCargando: false })
     }
   },
-
-  setMostrarVictoriaFrase: (mostrar) => set({ mostrarVictoriaFrase: mostrar }),
 }))
