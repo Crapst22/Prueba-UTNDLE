@@ -136,7 +136,7 @@ BEGIN
   FOR pol IN (
     SELECT policyname, tablename FROM pg_policies
     WHERE schemaname = 'public'
-    AND tablename IN ('profesores','presencialidades','catedras','profesor_catedra','profesor_presencialidad')
+    AND tablename IN ('profesores','presencialidades','catedras','frases','profesor_diario','aciertos_diarios','profesor_catedra','profesor_presencialidad')
   ) LOOP
     EXECUTE format('DROP POLICY IF EXISTS %I ON %I', pol.policyname, pol.tablename);
   END LOOP;
