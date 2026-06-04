@@ -2,10 +2,11 @@ import { useGameStore } from '@/store/gameStore'
 import { Modal } from '@/components/ui/Modal'
 
 export function ModalEstadisticas() {
-  const { mostrarEstadisticas, setMostrarEstadisticas, estadisticas } = useGameStore()
+  const { mostrarEstadisticas, setMostrarEstadisticas, estadisticas, estadisticasFrase, modoJuego } = useGameStore()
 
-  const total = estadisticas.partidasJugadas || 1
-  const porcentaje = Math.round((estadisticas.partidasGanadas / total) * 100)
+  const stats = modoJuego === 'clasico' ? estadisticas : estadisticasFrase
+  const total = stats.partidasJugadas || 1
+  const porcentaje = Math.round((stats.partidasGanadas / total) * 100)
 
   return (
     <Modal
@@ -15,7 +16,7 @@ export function ModalEstadisticas() {
     >
       <div className="grid grid-cols-4 gap-4 mb-6">
         <div className="text-center">
-          <p className="text-2xl font-bold text-yellow-400">{estadisticas.partidasJugadas}</p>
+          <p className="text-2xl font-bold text-yellow-400">{stats.partidasJugadas}</p>
           <p className="text-xs text-white/50">Jugadas</p>
         </div>
         <div className="text-center">
@@ -23,11 +24,11 @@ export function ModalEstadisticas() {
           <p className="text-xs text-white/50">% Victoria</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold text-yellow-400">{estadisticas.rachaActual}</p>
+          <p className="text-2xl font-bold text-yellow-400">{stats.rachaActual}</p>
           <p className="text-xs text-white/50">Racha</p>
         </div>
         <div className="text-center">
-          <p className="text-2xl font-bold text-yellow-400">{estadisticas.mejorRacha}</p>
+          <p className="text-2xl font-bold text-yellow-400">{stats.mejorRacha}</p>
           <p className="text-xs text-white/50">Mejor</p>
         </div>
       </div>
@@ -35,8 +36,8 @@ export function ModalEstadisticas() {
       <h3 className="text-sm font-semibold text-white/70 mb-3">Distribución de intentos</h3>
       <div className="space-y-1.5">
         {[1, 2, 3, 4, 5, 6].map((num) => {
-          const count = estadisticas.distribucionIntentos[num] || 0
-          const maxCount = Math.max(...Object.values(estadisticas.distribucionIntentos), 1)
+          const count = stats.distribucionIntentos[num] || 0
+          const maxCount = Math.max(...Object.values(stats.distribucionIntentos), 1)
           const width = (count / maxCount) * 100
 
           return (

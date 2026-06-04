@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '@/store/authStore'
+import { useGameStore } from '@/store/gameStore'
 import {
   obtenerCatedras,
   obtenerPresencialidades,
@@ -225,6 +226,23 @@ export function AdminConfiguracion() {
                   </div>
                 ))}
               </div>
+            </section>
+
+            <section className="card p-6">
+              <h2 className="text-lg font-bold text-white mb-4">Modo Frase</h2>
+              <p className="text-sm text-dark-400 mb-4">
+                Reiniciar la partida de frase del día de hoy para probar desde cero.
+              </p>
+              <button
+                onClick={() => {
+                  const { reiniciarFrasePartida, iniciarFrasePartida } = useGameStore.getState()
+                  reiniciarFrasePartida()
+                  iniciarFrasePartida()
+                }}
+                className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900"
+              >
+                Reiniciar modo frase
+              </button>
             </section>
           </>
         )}

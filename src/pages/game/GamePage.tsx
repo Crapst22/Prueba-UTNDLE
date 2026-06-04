@@ -35,7 +35,6 @@ function ModoFrase() {
   const fraseCargando = useGameStore((s) => s.fraseCargando)
   const fraseError = useGameStore((s) => s.fraseError)
   const iniciarFrasePartida = useGameStore((s) => s.iniciarFrasePartida)
-  const reiniciarFrasePartida = useGameStore((s) => s.reiniciarFrasePartida)
 
   if (fraseCargando) {
     return (
@@ -50,14 +49,9 @@ function ModoFrase() {
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="text-center glass-panel p-8 max-w-md">
           <p className="text-red-400 mb-4">{fraseError}</p>
-          <div className="flex justify-center gap-3">
-            <button onClick={iniciarFrasePartida} className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900">
-              Reintentar
-            </button>
-            <button onClick={reiniciarFrasePartida} className="gold-border-btn px-6 py-2 text-sm font-bold text-yellow-900">
-              Reiniciar
-            </button>
-          </div>
+          <button onClick={iniciarFrasePartida} className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900">
+            Reintentar
+          </button>
         </div>
       </div>
     )
@@ -73,19 +67,11 @@ function ModoFrase() {
 
   return (
     <>
+      <ProfesorAyer />
       <FraseCard frase={fraseDelDia} />
       <FraseBuscador />
       <FraseResultados />
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => { reiniciarFrasePartida(); iniciarFrasePartida() }}
-          className="gold-border-btn px-5 py-2 text-sm font-bold text-yellow-900"
-        >
-          Reiniciar modo frase
-        </button>
-      </div>
       <ContadorAciertos />
-      <ProfesorAyer />
       <ModalVictoriaFrase />
     </>
   )

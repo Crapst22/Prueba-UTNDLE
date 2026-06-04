@@ -59,6 +59,34 @@ function guardarEstadisticas(stats: Estadisticas) {
   localStorage.setItem('utndle_estadisticas', JSON.stringify(stats))
 }
 
+function cargarEstadisticasFrase(): Estadisticas {
+  try {
+    const stored = localStorage.getItem('utndle_estadisticas_frase')
+    if (!stored) {
+      return {
+        partidasJugadas: 0,
+        partidasGanadas: 0,
+        rachaActual: 0,
+        mejorRacha: 0,
+        distribucionIntentos: {},
+      }
+    }
+    return JSON.parse(stored)
+  } catch {
+    return {
+      partidasJugadas: 0,
+      partidasGanadas: 0,
+      rachaActual: 0,
+      mejorRacha: 0,
+      distribucionIntentos: {},
+    }
+  }
+}
+
+function guardarEstadisticasFrase(stats: Estadisticas) {
+  localStorage.setItem('utndle_estadisticas_frase', JSON.stringify(stats))
+}
+
 function cargarFrasePartida(): FrasePartida | null {
   try {
     const stored = localStorage.getItem('utndle_frase_partida')
@@ -124,6 +152,7 @@ interface GameState {
   profesorDelDia: Profesor | null
   partida: PartidaDiaria | null
   estadisticas: Estadisticas
+  estadisticasFrase: Estadisticas
   pistaAudioDesbloqueada: boolean
   pistaImagenDesbloqueada: boolean
   cargando: boolean
@@ -165,6 +194,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   profesorDelDia: null,
   partida: cargarPartida(),
   estadisticas: cargarEstadisticas(),
+  estadisticasFrase: cargarEstadisticasFrase(),
   pistaAudioDesbloqueada: false,
   pistaImagenDesbloqueada: false,
   cargando: false,
@@ -441,7 +471,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   realizarIntentoFrase: (profesor: Profesor) => {
-    const { fraseDelDia, frasePartida, estadisticas } = get()
+    const { fraseDelDia, frasePartida, estadisticasFrase } = get()
     if (!fraseDelDia || !frasePartida || frasePartida.adivinado) return
 
     const esCorrecto = profesor.id === fraseDelDia.profesor.id
@@ -466,18 +496,18 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     if (esCorrecto) {
       const nuevasEstadisticas: Estadisticas = {
-        ...estadisticas,
-        partidasJugadas: estadisticas.partidasJugadas + 1,
-        partidasGanadas: estadisticas.partidasGanadas + 1,
-        rachaActual: estadisticas.rachaActual + 1,
-        mejorRacha: Math.max(estadisticas.mejorRacha, estadisticas.rachaActual + 1),
+        ...estadisticasFrase,
+        partidasJugadas: estadisticasFrase.partidasJugadas + 1,
+        partidasGanadas: estadisticasFrase.partidasGanadas + 1,
+        rachaActual: estadisticasFrase.rachaActual + 1,
+        mejorRacha: Math.max(estadisticasFrase.mejorRacha, estadisticasFrase.rachaActual + 1),
         distribucionIntentos: {
-          ...estadisticas.distribucionIntentos,
-          [nuevosIntentos]: (estadisticas.distribucionIntentos[nuevosIntentos] || 0) + 1,
+          ...estadisticasFrase.distribucionIntentos,
+          [nuevosIntentos]: (estadisticasFrase.distribucionIntentos[nuevosIntentos] || 0) + 1,
         },
       }
-      guardarEstadisticas(nuevasEstadisticas)
-      set({ estadisticas: nuevasEstadisticas })
+      guardarEstadisticasFrase(nuevasEstadisticas)
+      set({ estadisticasFrase: nuevasEstadisticas })
 
       incrementarContadorDB(obtenerFechaKey(), 'frase').then((nuevo) => {
         set({ contadorAciertosFrase: nuevo, profesorAyerFrase: fraseDelDia.profesor })
