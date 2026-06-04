@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion, FraseConProfesor, FrasePartida, IntentoFrase } from '@/types'
 import { obtenerProfesorDelDia, obtenerProfesor, obtenerProfesorAleatorio } from '@/services/profesores'
-import { obtenerFraseDelDia, obtenerFrase } from '@/services/frases'
+import { obtenerFraseDelDia, obtenerFrase, obtenerFraseAleatoria } from '@/services/frases'
 import { guardarProfesorDiario, obtenerProfesorDiario, obtenerContadorAciertos as obtenerContadorDB, incrementarContadorAciertos as incrementarContadorDB } from '@/services/diario'
 import { calcularEdad } from '@/utils/edad'
 
@@ -187,6 +187,7 @@ interface GameState {
   iniciarFrasePartida: () => Promise<void>
   realizarIntentoFrase: (profesor: Profesor) => void
   reiniciarFrasePartida: () => void
+  cambiarFraseDelDia: () => Promise<void>
   setMostrarVictoriaFrase: (mostrar: boolean) => void
 }
 
@@ -538,6 +539,39 @@ export const useGameStore = create<GameState>((set, get) => ({
       profesorAyerFrase: null,
       mostrarVictoriaFrase: false,
     })
+  },
+
+  cambiarFraseDelDia: async () => {
+    set({ fraseCargando: true, fraseError: null })
+    try {
+      const frase = await obtenerFraseAleatoria()
+      if (!frase) {
+        set({ fraseError: 'No hay frases disponibles', fraseCargando: false })
+        return
+      }
+      const fecha = obtenerFechaKey()
+      const nuevaPartida: FrasePartida = {
+        fecha,
+        fraseId: frase.id,
+        profesorId: frase.profesor.id,
+        adivinado: false,
+        intentos: 0,
+        intentosList: [],
+        tiempoInicio: Date.now(),
+      }
+      guardarFrasePartida(nuevaPartida)
+      set({
+        fraseDelDia: frase,
+        frasePartida: nuevaPartida,
+        fraseAdivinado: false,
+        contadorAciertosFrase: 0,
+        profesorAyerFrase: null,
+        fraseCargando: false,
+        mostrarVictoriaFrase: false,
+      })
+    } catch (err) {
+      set({ fraseError: err instanceof Error ? err.message : 'Error al cambiar frase', fraseCargando: false })
+    }
   },
 
   setMostrarVictoriaFrase: (mostrar) => set({ mostrarVictoriaFrase: mostrar }),

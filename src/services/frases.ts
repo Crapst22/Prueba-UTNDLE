@@ -94,6 +94,14 @@ export async function obtenerFraseDelDia(fecha: string): Promise<FraseConProfeso
   return obtenerFrase(ids[indice])
 }
 
+export async function obtenerFraseAleatoria(): Promise<FraseConProfesor | null> {
+  const ids = await obtenerIdsFrases()
+  if (ids.length === 0) return null
+
+  const indice = Math.floor(Math.random() * ids.length)
+  return obtenerFrase(ids[indice])
+}
+
 export async function obtenerFraseDelDiaAnterior(fecha: string): Promise<FraseConProfesor | null> {
   const fechaAnterior = new Date(fecha)
   fechaAnterior.setDate(fechaAnterior.getDate() - 1)

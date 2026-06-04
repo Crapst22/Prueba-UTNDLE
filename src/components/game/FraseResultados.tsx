@@ -7,11 +7,13 @@ export function FraseResultados() {
 
   if (!frasePartida?.intentosList?.length) return null
 
+  const intentos = [...frasePartida.intentosList].reverse()
+
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-5">
       <div className="mx-auto" style={{ maxWidth: '650px' }}>
         <div className="space-y-2">
-          {frasePartida.intentosList.map((intento, i) => (
+          {intentos.map((intento, i) => (
             <motion.div
               key={`${intento.profesor.id}-${i}`}
               initial={{ opacity: 0, x: -10 }}
