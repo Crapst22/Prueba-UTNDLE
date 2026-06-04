@@ -2,8 +2,9 @@ import { motion } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
 
 export function BarraInfo() {
-  const { setMostrarAyuda, setMostrarEstadisticas, estadisticas } = useGameStore()
-  const racha = estadisticas.rachaActual
+  const { setMostrarAyuda, setMostrarEstadisticas, estadisticas, estadisticasFrase, modoJuego } = useGameStore()
+  const stats = modoJuego === 'clasico' ? estadisticas : estadisticasFrase
+  const racha = stats.rachaActual
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-4">
