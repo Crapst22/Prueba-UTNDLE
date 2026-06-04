@@ -28,11 +28,17 @@ export function FotoResultados() {
                   duration: 0.5,
                   ease: [0.34, 1.56, 0.64, 1],
                 }}
-                style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
+                style={{
+                  transformStyle: 'preserve-3d',
+                  perspective: 1000,
+                  background: esCorrecto
+                    ? 'rgba(34,197,94,0.08)'
+                    : 'rgba(15,23,42,0.85)',
+                }}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-xl ${
                   esCorrecto
-                    ? 'bg-green-500/15 border border-green-500/30'
-                    : 'bg-red-500/10 border border-red-500/20'
+                    ? 'border border-green-500/30'
+                    : 'border border-red-500/20'
                 }`}
               >
                 <div

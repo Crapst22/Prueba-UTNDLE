@@ -23,9 +23,14 @@ export function FraseResultados() {
               transition={{ duration: 0.25, delay: i * 0.05 }}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-xl ${
                 intento.correcto
-                  ? 'bg-green-500/15 border border-green-500/30'
-                  : 'bg-red-500/10 border border-red-500/20'
+                  ? 'border border-green-500/30'
+                  : 'border border-red-500/20'
               }`}
+              style={{
+                background: intento.correcto
+                  ? 'rgba(34,197,94,0.08)'
+                  : 'rgba(15,23,42,0.85)',
+              }}
             >
               <div
                 className={`w-2 h-2 rounded-full shrink-0 ${
