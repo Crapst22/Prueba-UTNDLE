@@ -57,7 +57,13 @@ function ModoFrase() {
     )
   }
 
-  if (!fraseDelDia) return null
+  if (!fraseDelDia) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <LoadingSpinner size="lg" text="Cargando frase..." />
+      </div>
+    )
+  }
 
   return (
     <>

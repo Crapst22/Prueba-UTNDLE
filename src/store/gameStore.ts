@@ -381,7 +381,13 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   setMostrarEstadisticas: (mostrar) => set({ mostrarEstadisticas: mostrar }),
   setMostrarAyuda: (mostrar) => set({ mostrarAyuda: mostrar }),
-  setModoJuego: (modo) => set({ modoJuego: modo }),
+  setModoJuego: (modo) => {
+    set({
+      modoJuego: modo,
+      fraseCargando: modo === 'frase',
+      fraseError: null,
+    })
+  },
 
   iniciarFrasePartida: async () => {
     set({ fraseCargando: true, fraseError: null })
