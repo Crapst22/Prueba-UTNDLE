@@ -187,6 +187,20 @@ export async function actualizarProfesor(
   return obtenerProfesor(id) as Promise<Profesor>
 }
 
+export async function obtenerProfesorFotoDelDia(fecha: string): Promise<Profesor | null> {
+  const { data: profesores, error } = await supabase
+    .from('profesores')
+    .select('id')
+
+  if (error) throw error
+  if (!profesores || profesores.length === 0) return null
+
+  const indice = hashFecha('foto-' + fecha, profesores.length)
+  const profesorId = profesores[indice].id
+
+  return obtenerProfesor(profesorId)
+}
+
 export async function obtenerProfesorAleatorio(excluirId?: string): Promise<Profesor | null> {
   const { data: ids, error } = await supabase
     .from('profesores')

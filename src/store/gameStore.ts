@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion, FraseConProfesor, FrasePartida, IntentoFrase } from '@/types'
-import { obtenerProfesorDelDia, obtenerProfesor, obtenerProfesorAleatorio } from '@/services/profesores'
+import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion, FraseConProfesor, FrasePartida, IntentoFrase, FotoPartida } from '@/types'
+import { obtenerProfesorDelDia, obtenerProfesor, obtenerProfesorAleatorio, obtenerProfesorFotoDelDia } from '@/services/profesores'
 import { obtenerFraseDelDia, obtenerFrase, obtenerFraseAleatoria } from '@/services/frases'
 import { guardarProfesorDiario, obtenerProfesorDiario, obtenerContadorAciertos as obtenerContadorDB, incrementarContadorAciertos as incrementarContadorDB } from '@/services/diario'
 import { calcularEdad } from '@/utils/edad'
@@ -103,6 +103,38 @@ function guardarFrasePartida(partida: FrasePartida) {
   localStorage.setItem('utndle_frase_partida', JSON.stringify(partida))
 }
 
+function cargarEstadisticasFoto(): Estadisticas {
+  try {
+    const stored = localStorage.getItem('utndle_estadisticas_foto')
+    if (!stored) {
+      return { partidasJugadas: 0, partidasGanadas: 0, rachaActual: 0, mejorRacha: 0, distribucionIntentos: {} }
+    }
+    return JSON.parse(stored)
+  } catch {
+    return { partidasJugadas: 0, partidasGanadas: 0, rachaActual: 0, mejorRacha: 0, distribucionIntentos: {} }
+  }
+}
+
+function guardarEstadisticasFoto(stats: Estadisticas) {
+  localStorage.setItem('utndle_estadisticas_foto', JSON.stringify(stats))
+}
+
+function cargarFotoPartida(): FotoPartida | null {
+  try {
+    const stored = localStorage.getItem('utndle_foto_partida')
+    if (!stored) return null
+    const partida = JSON.parse(stored) as FotoPartida
+    if (partida.fecha === obtenerFechaKey()) return partida
+    return null
+  } catch {
+    return null
+  }
+}
+
+function guardarFotoPartida(partida: FotoPartida) {
+  localStorage.setItem('utndle_foto_partida', JSON.stringify(partida))
+}
+
 function compararProfesores(buscado: Profesor, correcto: Profesor): ResultadoComparacion {
   const resultado: ResultadoComparacion = {
     profesor: buscado.id === correcto.id ? 'verde' : 'rojo',
@@ -172,6 +204,13 @@ interface GameState {
   contadorAciertosFrase: number
   profesorAyer: Profesor | null
   profesorAyerFrase: Profesor | null
+  estadisticasFoto: Estadisticas
+  fotoProfesor: Profesor | null
+  fotoPartida: FotoPartida | null
+  fotoCargando: boolean
+  fotoError: string | null
+  contadorAciertosFoto: number
+  profesorAyerFoto: Profesor | null
 
   iniciarPartida: () => Promise<void>
   realizarIntento: (profesor: Profesor) => void
@@ -187,6 +226,12 @@ interface GameState {
   realizarIntentoFrase: (profesor: Profesor) => void
   reiniciarFrasePartida: () => void
   cambiarFraseDelDia: () => Promise<void>
+
+  // Foto mode actions
+  iniciarFotoPartida: () => Promise<void>
+  realizarIntentoFoto: (profesor: Profesor) => void
+  reiniciarFotoPartida: () => void
+  cambiarFotoDelDia: () => Promise<void>
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -212,6 +257,13 @@ export const useGameStore = create<GameState>((set, get) => ({
   contadorAciertosFrase: 0,
   profesorAyer: null,
   profesorAyerFrase: null,
+  estadisticasFoto: cargarEstadisticasFoto(),
+  fotoProfesor: null,
+  fotoPartida: cargarFotoPartida(),
+  fotoCargando: false,
+  fotoError: null,
+  contadorAciertosFoto: 0,
+  profesorAyerFoto: null,
 
   iniciarPartida: async () => {
     set({ cargando: true, error: null })
@@ -401,6 +453,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       modoJuego: modo,
       fraseCargando: modo === 'frase',
       fraseError: null,
+      fotoCargando: modo === 'adivina-la-foto',
+      fotoError: null,
     })
   },
 
@@ -559,6 +613,152 @@ export const useGameStore = create<GameState>((set, get) => ({
       })
     } catch (err) {
       set({ fraseError: err instanceof Error ? err.message : 'Error al cambiar frase', fraseCargando: false })
+    }
+  },
+
+  iniciarFotoPartida: async () => {
+    set({ fotoCargando: true, fotoError: null })
+    try {
+      const fecha = obtenerFechaKey()
+      const partidaExistente = get().fotoPartida
+
+      if (partidaExistente && partidaExistente.fecha === fecha) {
+        const profesor = await obtenerProfesor(partidaExistente.profesorId)
+        if (profesor) {
+          const [contador, profesorAyer] = await Promise.all([
+            obtenerContadorDB(fecha, 'foto'),
+            obtenerProfesorDiario(obtenerFechaAnteriorKey(), 'foto').catch(() => null),
+          ])
+          set({
+            fotoProfesor: profesor,
+            fotoPartida: partidaExistente,
+            contadorAciertosFoto: contador,
+            profesorAyerFoto: partidaExistente.adivinado ? profesor : profesorAyer,
+            fotoCargando: false,
+          })
+          return
+        }
+      }
+
+      const profesor = await obtenerProfesorFotoDelDia(fecha)
+      if (!profesor) {
+        set({ fotoError: 'No hay profesores disponibles', fotoCargando: false })
+        return
+      }
+
+      await guardarProfesorDiario(fecha, 'foto', profesor.id)
+
+      const nuevaPartida: FotoPartida = {
+        fecha,
+        profesorId: profesor.id,
+        adivinado: false,
+        intentos: [],
+        tiempoInicio: Date.now(),
+        fotoUrl: profesor.foto_url,
+        pistaUrl: profesor.imagen_pista_url || profesor.foto_url,
+      }
+
+      guardarFotoPartida(nuevaPartida)
+
+      const [contador, profesorAyer] = await Promise.all([
+        obtenerContadorDB(fecha, 'foto'),
+        obtenerProfesorDiario(obtenerFechaAnteriorKey(), 'foto').catch(() => null),
+      ])
+
+      set({
+        fotoProfesor: profesor,
+        fotoPartida: nuevaPartida,
+        contadorAciertosFoto: contador,
+        profesorAyerFoto: profesorAyer,
+        fotoCargando: false,
+      })
+    } catch (err) {
+      set({ fotoError: err instanceof Error ? err.message : 'Error al cargar la partida', fotoCargando: false })
+    }
+  },
+
+  realizarIntentoFoto: (profesor: Profesor) => {
+    const { fotoProfesor, fotoPartida, estadisticasFoto } = get()
+    if (!fotoProfesor || !fotoPartida || fotoPartida.adivinado) return
+
+    const resultado = compararProfesores(profesor, fotoProfesor)
+    const nuevoIntento: Intento = { profesor, resultado, timestamp: Date.now() }
+    const nuevosIntentos = [...fotoPartida.intentos, nuevoIntento]
+    const adivinado = resultado.profesor === 'verde'
+
+    const partidaActualizada: FotoPartida = {
+      ...fotoPartida,
+      intentos: nuevosIntentos,
+      adivinado,
+      tiempoFin: adivinado ? Date.now() : undefined,
+    }
+
+    guardarFotoPartida(partidaActualizada)
+
+    if (adivinado) {
+      const nuevasEstadisticas: Estadisticas = {
+        ...estadisticasFoto,
+        partidasJugadas: estadisticasFoto.partidasJugadas + 1,
+        partidasGanadas: estadisticasFoto.partidasGanadas + 1,
+        rachaActual: estadisticasFoto.rachaActual + 1,
+        mejorRacha: Math.max(estadisticasFoto.mejorRacha, estadisticasFoto.rachaActual + 1),
+        distribucionIntentos: {
+          ...estadisticasFoto.distribucionIntentos,
+          [nuevosIntentos.length]: (estadisticasFoto.distribucionIntentos[nuevosIntentos.length] || 0) + 1,
+        },
+      }
+      guardarEstadisticasFoto(nuevasEstadisticas)
+      set({ estadisticasFoto: nuevasEstadisticas })
+
+      incrementarContadorDB(obtenerFechaKey(), 'foto').then((nuevo) => {
+        set({ contadorAciertosFoto: nuevo, profesorAyerFoto: fotoProfesor })
+      })
+    }
+
+    set({ fotoPartida: partidaActualizada })
+  },
+
+  reiniciarFotoPartida: () => {
+    localStorage.removeItem('utndle_foto_partida')
+    set({
+      fotoProfesor: null,
+      fotoPartida: null,
+      fotoCargando: true,
+      fotoError: null,
+      contadorAciertosFoto: 0,
+      profesorAyerFoto: null,
+    })
+  },
+
+  cambiarFotoDelDia: async () => {
+    set({ fotoCargando: true, fotoError: null })
+    try {
+      const profesorActual = get().fotoProfesor
+      const profesor = await obtenerProfesorAleatorio(profesorActual?.id)
+      if (!profesor) {
+        set({ fotoError: 'No hay profesores disponibles', fotoCargando: false })
+        return
+      }
+      const fecha = obtenerFechaKey()
+      const nuevaPartida: FotoPartida = {
+        fecha,
+        profesorId: profesor.id,
+        adivinado: false,
+        intentos: [],
+        tiempoInicio: Date.now(),
+        fotoUrl: profesor.foto_url,
+        pistaUrl: profesor.imagen_pista_url || profesor.foto_url,
+      }
+      guardarFotoPartida(nuevaPartida)
+      set({
+        fotoProfesor: profesor,
+        fotoPartida: nuevaPartida,
+        contadorAciertosFoto: 0,
+        profesorAyerFoto: null,
+        fotoCargando: false,
+      })
+    } catch (err) {
+      set({ fotoError: err instanceof Error ? err.message : 'Error al cambiar foto', fotoCargando: false })
     }
   },
 }))

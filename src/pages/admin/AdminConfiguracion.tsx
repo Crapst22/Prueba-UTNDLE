@@ -285,6 +285,35 @@ export function AdminConfiguracion() {
                 </button>
               </div>
             </section>
+
+            <section className="card p-6">
+              <h2 className="text-lg font-bold text-white mb-4">Modo Adivina la Foto</h2>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => {
+                    const { reiniciarFotoPartida, iniciarFotoPartida, setModoJuego } = useGameStore.getState()
+                    reiniciarFotoPartida()
+                    iniciarFotoPartida()
+                    setModoJuego('adivina-la-foto')
+                    navigate('/')
+                  }}
+                  className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900"
+                >
+                  Reiniciar partida
+                </button>
+                <button
+                  onClick={async () => {
+                    const { cambiarFotoDelDia, setModoJuego } = useGameStore.getState()
+                    await cambiarFotoDelDia()
+                    setModoJuego('adivina-la-foto')
+                    navigate('/')
+                  }}
+                  className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900"
+                >
+                  Cambiar profesor
+                </button>
+              </div>
+            </section>
           </>
         )}
       </main>

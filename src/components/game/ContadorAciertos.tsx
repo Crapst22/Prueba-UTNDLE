@@ -4,8 +4,9 @@ export function ContadorAciertos() {
   const modoJuego = useGameStore((s) => s.modoJuego)
   const contadorAciertos = useGameStore((s) => s.contadorAciertos)
   const contadorAciertosFrase = useGameStore((s) => s.contadorAciertosFrase)
+  const contadorAciertosFoto = useGameStore((s) => s.contadorAciertosFoto)
 
-  const contador = modoJuego === 'clasico' ? contadorAciertos : contadorAciertosFrase
+  const contador = modoJuego === 'clasico' ? contadorAciertos : modoJuego === 'frase' ? contadorAciertosFrase : contadorAciertosFoto
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-4">

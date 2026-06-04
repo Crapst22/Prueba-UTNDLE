@@ -14,9 +14,12 @@ export function BuscadorProfesores() {
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const timeoutRef = useRef<number | undefined>(undefined)
-  const { realizarIntento, partida } = useGameStore()
+  const { realizarIntento, realizarIntentoFoto, partida, fotoPartida, modoJuego } = useGameStore()
 
-  const deshabilitado = partida?.adivinado
+  const partidaActiva = modoJuego === 'adivina-la-foto' ? fotoPartida : partida
+  const handleIntento = modoJuego === 'adivina-la-foto' ? realizarIntentoFoto : realizarIntento
+
+  const deshabilitado = partidaActiva?.adivinado
 
   const buscar = useCallback(async (termino: string) => {
     if (termino.length < 1) {
@@ -28,7 +31,7 @@ export function BuscadorProfesores() {
     setCargando(true)
     try {
       const idsSeleccionados = new Set(
-        (partida?.intentos || []).map((i) => i.profesor.id)
+        (partidaActiva?.intentos || []).map((i) => i.profesor.id)
       )
       const profesores = await buscarProfesores(termino)
       const filtrados = profesores.filter((p) => !idsSeleccionados.has(p.id))
@@ -39,7 +42,7 @@ export function BuscadorProfesores() {
     } finally {
       setCargando(false)
     }
-  }, [partida])
+  }, [partidaActiva])
 
   useEffect(() => {
     if (timeoutRef.current) {
@@ -76,7 +79,7 @@ export function BuscadorProfesores() {
     setResultados([])
     setSeleccionado(true)
     setMostrarDropdown(false)
-    realizarIntento(profesor)
+    handleIntento(profesor)
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

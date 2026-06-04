@@ -2,9 +2,9 @@ import { useGameStore } from '@/store/gameStore'
 import { Modal } from '@/components/ui/Modal'
 
 export function ModalEstadisticas() {
-  const { mostrarEstadisticas, setMostrarEstadisticas, estadisticas, estadisticasFrase, modoJuego } = useGameStore()
+  const { mostrarEstadisticas, setMostrarEstadisticas, estadisticas, estadisticasFrase, estadisticasFoto, modoJuego } = useGameStore()
 
-  const stats = modoJuego === 'clasico' ? estadisticas : estadisticasFrase
+  const stats = modoJuego === 'clasico' ? estadisticas : modoJuego === 'frase' ? estadisticasFrase : estadisticasFoto
   const total = stats.partidasJugadas || 1
   const porcentaje = Math.round((stats.partidasGanadas / total) * 100)
 

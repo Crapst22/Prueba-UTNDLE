@@ -4,8 +4,9 @@ export function ProfesorAyer() {
   const modoJuego = useGameStore((s) => s.modoJuego)
   const profesorAyer = useGameStore((s) => s.profesorAyer)
   const profesorAyerFrase = useGameStore((s) => s.profesorAyerFrase)
+  const profesorAyerFoto = useGameStore((s) => s.profesorAyerFoto)
 
-  const profesor = modoJuego === 'clasico' ? profesorAyer : profesorAyerFrase
+  const profesor = modoJuego === 'clasico' ? profesorAyer : modoJuego === 'frase' ? profesorAyerFrase : profesorAyerFoto
 
   if (!profesor) return null
 

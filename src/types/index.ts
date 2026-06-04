@@ -87,6 +87,17 @@ export interface IntentoFrase {
   timestamp: number
 }
 
+export interface FotoPartida {
+  fecha: string
+  profesorId: string
+  adivinado: boolean
+  intentos: Intento[]
+  tiempoInicio: number
+  tiempoFin?: number
+  fotoUrl: string
+  pistaUrl: string
+}
+
 export interface FrasePartida {
   fecha: string
   fraseId: string

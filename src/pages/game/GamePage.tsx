@@ -14,6 +14,7 @@ import { ProfesorAyer } from '@/components/game/ProfesorAyer'
 import { ModalEstadisticas } from '@/components/game/ModalEstadisticas'
 import { ModalAyuda } from '@/components/game/ModalAyuda'
 import { ModalVictoria } from '@/components/game/ModalVictoria'
+import { ModoFoto } from '@/components/game/ModoFoto'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 function ModoClasico() {
@@ -79,13 +80,15 @@ export function GamePage() {
   const modoJuego = useGameStore((s) => s.modoJuego)
   const iniciarPartida = useGameStore((s) => s.iniciarPartida)
   const iniciarFrasePartida = useGameStore((s) => s.iniciarFrasePartida)
+  const iniciarFotoPartida = useGameStore((s) => s.iniciarFotoPartida)
   const cargando = useGameStore((s) => s.cargando)
   const error = useGameStore((s) => s.error)
 
   useEffect(() => {
     if (modoJuego === 'clasico') iniciarPartida()
     else if (modoJuego === 'frase') iniciarFrasePartida()
-  }, [modoJuego, iniciarPartida, iniciarFrasePartida])
+    else if (modoJuego === 'adivina-la-foto') iniciarFotoPartida()
+  }, [modoJuego, iniciarPartida, iniciarFrasePartida, iniciarFotoPartida])
 
   const fondo = (
     <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
@@ -129,6 +132,7 @@ export function GamePage() {
 
         {modoJuego === 'clasico' && <ModoClasico />}
         {modoJuego === 'frase' && <ModoFrase />}
+        {modoJuego === 'adivina-la-foto' && <ModoFoto />}
 
         <ModalEstadisticas />
         <ModalAyuda />
