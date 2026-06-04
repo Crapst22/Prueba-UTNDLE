@@ -12,8 +12,8 @@ export function FotoCard() {
   const intentosCount = fotoPartida.intentos.length
 
   const clipInset = fotoRevelarAutomatico
-    ? Math.max(0, 48 - intentosCount * 2.5)
-    : Math.max(0, 48)
+    ? Math.max(0, 71 - intentosCount * 2.5)
+    : Math.max(0, 71)
 
   return (
     <motion.div
