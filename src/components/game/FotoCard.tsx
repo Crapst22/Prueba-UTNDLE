@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
 import { useGameStore } from '@/store/gameStore'
-import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 
 export function FotoCard() {
   const fotoPartida = useGameStore((s) => s.fotoPartida)
@@ -13,8 +12,8 @@ export function FotoCard() {
   const intentosCount = fotoPartida.intentos.length
 
   const clipInset = fotoRevelarAutomatico
-    ? Math.max(0, 71 - intentosCount * 2.5)
-    : Math.max(0, 71)
+    ? Math.max(0, 48 - intentosCount * 2.5)
+    : Math.max(0, 48)
 
   return (
     <motion.div
@@ -46,20 +45,21 @@ export function FotoCard() {
               boxShadow: '0 0 20px rgba(250,204,21,0.15), inset 0 0 30px rgba(0,0,0,0.3)',
             }}
           >
-            <div
+            <motion.img
+              src={fotoPartida.fotoUrl}
+              alt="Foto del profesor"
+              className="w-full h-full object-cover"
               style={{
-                width: '100%',
-                height: '100%',
                 clipPath: `inset(${clipInset}%)`,
                 transition: 'clip-path 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
               }}
-            >
-              <ImageWithFallback
-                src={fotoPartida.fotoUrl || fotoPartida.pistaUrl}
-                alt="Foto del profesor"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            />
+            <div
+              className="absolute inset-0 rounded-xl pointer-events-none"
+              style={{
+                boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
+              }}
+            />
           </div>
         </div>
 
