@@ -157,6 +157,7 @@ interface GameState {
   // Frase mode actions
   iniciarFrasePartida: () => Promise<void>
   realizarIntentoFrase: (profesor: Profesor) => void
+  reiniciarFrasePartida: () => void
   setMostrarVictoriaFrase: (mostrar: boolean) => void
 }
 
@@ -394,7 +395,7 @@ export const useGameStore = create<GameState>((set, get) => ({
             contadorAciertosFrase: contador,
             profesorAyerFrase: partidaExistente.adivinado ? frase.profesor : profesorAyer,
             fraseCargando: false,
-            mostrarVictoriaFrase: false,
+            mostrarVictoriaFrase: partidaExistente.adivinado,
           })
           return
         }
@@ -493,6 +494,20 @@ export const useGameStore = create<GameState>((set, get) => ({
         set({ mostrarVictoriaFrase: true })
       }, 800)
     }
+  },
+
+  reiniciarFrasePartida: () => {
+    localStorage.removeItem('utndle_frase_partida')
+    set({
+      fraseDelDia: null,
+      frasePartida: null,
+      fraseAdivinado: false,
+      fraseCargando: true,
+      fraseError: null,
+      contadorAciertosFrase: 0,
+      profesorAyerFrase: null,
+      mostrarVictoriaFrase: false,
+    })
   },
 
   setMostrarVictoriaFrase: (mostrar) => set({ mostrarVictoriaFrase: mostrar }),
