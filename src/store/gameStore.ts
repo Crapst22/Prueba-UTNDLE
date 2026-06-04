@@ -211,6 +211,7 @@ interface GameState {
   fotoError: string | null
   contadorAciertosFoto: number
   profesorAyerFoto: Profesor | null
+  fotoRevelarAutomatico: boolean
 
   iniciarPartida: () => Promise<void>
   realizarIntento: (profesor: Profesor) => void
@@ -232,6 +233,7 @@ interface GameState {
   realizarIntentoFoto: (profesor: Profesor) => void
   reiniciarFotoPartida: () => void
   cambiarFotoDelDia: () => Promise<void>
+  setFotoRevelarAutomatico: (valor: boolean) => void
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -264,6 +266,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   fotoError: null,
   contadorAciertosFoto: 0,
   profesorAyerFoto: null,
+  fotoRevelarAutomatico: (() => {
+    try { return JSON.parse(localStorage.getItem('utndle_foto_revelar') || 'true') } catch { return true }
+  })(),
 
   iniciarPartida: async () => {
     set({ cargando: true, error: null })
@@ -760,5 +765,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     } catch (err) {
       set({ fotoError: err instanceof Error ? err.message : 'Error al cambiar foto', fotoCargando: false })
     }
+  },
+
+  setFotoRevelarAutomatico: (valor) => {
+    localStorage.setItem('utndle_foto_revelar', JSON.stringify(valor))
+    set({ fotoRevelarAutomatico: valor })
   },
 }))
