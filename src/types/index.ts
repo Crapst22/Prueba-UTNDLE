@@ -32,6 +32,19 @@ export interface ProfesorPresencialidad {
   presencialidad_id: string
 }
 
+export interface Frase {
+  id: string
+  profesor_id: string
+  texto: string
+  created_at: string
+}
+
+export interface FraseConProfesor {
+  id: string
+  texto: string
+  profesor: Profesor
+}
+
 export type ModoComparacion = 'exacto' | 'numerico' | 'catedras'
 
 export type ColorResultado = 'verde' | 'amarillo' | 'rojo' | 'subida' | 'bajada'
@@ -64,6 +77,16 @@ export interface PartidaDiaria {
   profesorId: string
   adivinado: boolean
   intentos: Intento[]
+  tiempoInicio: number
+  tiempoFin?: number
+}
+
+export interface FrasePartida {
+  fecha: string
+  fraseId: string
+  profesorId: string
+  adivinado: boolean
+  intentos: number
   tiempoInicio: number
   tiempoFin?: number
 }

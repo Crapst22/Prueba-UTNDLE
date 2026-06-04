@@ -30,6 +30,13 @@ CREATE TABLE IF NOT EXISTS profesores (
 
 -- 2. TABLAS RELACIONALES
 
+CREATE TABLE IF NOT EXISTS frases (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  profesor_id UUID NOT NULL REFERENCES profesores(id) ON DELETE CASCADE,
+  texto TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS profesor_catedra (
   profesor_id UUID NOT NULL REFERENCES profesores(id) ON DELETE CASCADE,
   catedra_id UUID NOT NULL REFERENCES catedras(id) ON DELETE CASCADE,
@@ -119,6 +126,7 @@ END $$;
 ALTER TABLE profesores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE presencialidades ENABLE ROW LEVEL SECURITY;
 ALTER TABLE catedras ENABLE ROW LEVEL SECURITY;
+ALTER TABLE frases ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profesor_catedra ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profesor_presencialidad ENABLE ROW LEVEL SECURITY;
 
@@ -130,6 +138,9 @@ CREATE POLICY "Lectura pública - presencialidades" ON presencialidades
   FOR SELECT USING (true);
 
 CREATE POLICY "Lectura pública - catedras" ON catedras
+  FOR SELECT USING (true);
+
+CREATE POLICY "Lectura pública - frases" ON frases
   FOR SELECT USING (true);
 
 CREATE POLICY "Lectura pública - profesor_catedra" ON profesor_catedra
@@ -158,6 +169,13 @@ CREATE POLICY "Insert admin - catedras" ON catedras
 CREATE POLICY "Update admin - catedras" ON catedras
   FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Delete admin - catedras" ON catedras
+  FOR DELETE USING (auth.uid() IS NOT NULL);
+
+CREATE POLICY "Insert admin - frases" ON frases
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+CREATE POLICY "Update admin - frases" ON frases
+  FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
+CREATE POLICY "Delete admin - frases" ON frases
   FOR DELETE USING (auth.uid() IS NOT NULL);
 
 CREATE POLICY "Insert admin - profesor_catedra" ON profesor_catedra

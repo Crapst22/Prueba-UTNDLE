@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useGameStore } from '@/store/gameStore'
 
 const modos = [
   { id: 'clasico', label: 'Clásico', icon: '/iconos/clasico.png' },
@@ -9,17 +9,18 @@ const modos = [
 ]
 
 export function ModosJuego() {
-  const [activo, setActivo] = useState('clasico')
+  const modoJuego = useGameStore((s) => s.modoJuego)
+  const setModoJuego = useGameStore((s) => s.setModoJuego)
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-5">
       <div className="flex justify-center gap-4 sm:gap-6">
         {modos.map((modo) => {
-          const isActive = activo === modo.id
+          const isActive = modoJuego === modo.id
           return (
             <motion.button
               key={modo.id}
-              onClick={() => setActivo(modo.id)}
+              onClick={() => setModoJuego(modo.id)}
               className={`flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full transition-all ${
                 isActive
                   ? 'bg-gradient-to-b from-yellow-400 to-yellow-500 shadow-[0_0_20px_rgba(250,204,21,0.4)]'

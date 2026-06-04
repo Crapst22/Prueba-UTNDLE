@@ -1,6 +1,7 @@
 import { create } from 'zustand'
-import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion } from '@/types'
+import type { Profesor, Intento, PartidaDiaria, Estadisticas, ResultadoComparacion, FraseConProfesor, FrasePartida } from '@/types'
 import { obtenerProfesorDelDia, obtenerProfesor, obtenerProfesorAleatorio } from '@/services/profesores'
+import { obtenerFraseDelDia, obtenerFraseDelDiaAnterior, obtenerFrase } from '@/services/frases'
 import { calcularEdad } from '@/utils/edad'
 
 function obtenerFechaKey(): string {
@@ -49,6 +50,57 @@ function cargarEstadisticas(): Estadisticas {
 
 function guardarEstadisticas(stats: Estadisticas) {
   localStorage.setItem('utndle_estadisticas', JSON.stringify(stats))
+}
+
+function cargarFrasePartida(): FrasePartida | null {
+  try {
+    const stored = localStorage.getItem('utndle_frase_partida')
+    if (!stored) return null
+    const partida = JSON.parse(stored) as FrasePartida
+    if (partida.fecha === obtenerFechaKey()) return partida
+    return null
+  } catch {
+    return null
+  }
+}
+
+function guardarFrasePartida(partida: FrasePartida) {
+  localStorage.setItem('utndle_frase_partida', JSON.stringify(partida))
+}
+
+function obtenerContadorAciertos(): number {
+  const key = `utndle_aciertos_${obtenerFechaKey()}`
+  try {
+    const stored = localStorage.getItem(key)
+    if (stored) return parseInt(stored, 10)
+    const base = hashFechaSimple(obtenerFechaKey(), 500) + 50
+    return base
+  } catch {
+    return 0
+  }
+}
+
+function hashFechaSimple(fecha: string, max: number): number {
+  let hash = 0
+  for (let i = 0; i < fecha.length; i++) {
+    const char = fecha.charCodeAt(i)
+    hash = ((hash << 5) - hash) + char
+    hash = hash & hash
+  }
+  return Math.abs(hash) % max
+}
+
+function incrementarContadorAciertos(): number {
+  const key = `utndle_aciertos_${obtenerFechaKey()}`
+  try {
+    const stored = localStorage.getItem(key)
+    const actual = stored ? parseInt(stored, 10) : obtenerContadorAciertos()
+    const nuevo = actual + 1
+    localStorage.setItem(key, nuevo.toString())
+    return nuevo
+  } catch {
+    return 1
+  }
 }
 
 function compararProfesores(buscado: Profesor, correcto: Profesor): ResultadoComparacion {
@@ -109,6 +161,16 @@ interface GameState {
   mostrarAyuda: boolean
   mostrarVictoria: boolean
 
+  // Frase mode state
+  fraseDelDia: FraseConProfesor | null
+  frasePartida: FrasePartida | null
+  fraseAdivinado: boolean
+  fraseCargando: boolean
+  fraseError: string | null
+  contadorAciertos: number
+  profesorAyer: Profesor | null
+  mostrarVictoriaFrase: boolean
+
   iniciarPartida: () => Promise<void>
   realizarIntento: (profesor: Profesor) => void
   reiniciarEstado: () => void
@@ -117,6 +179,11 @@ interface GameState {
   setMostrarEstadisticas: (mostrar: boolean) => void
   setMostrarAyuda: (mostrar: boolean) => void
   setModoJuego: (modo: string) => void
+
+  // Frase mode actions
+  iniciarFrasePartida: () => Promise<void>
+  realizarIntentoFrase: (profesor: Profesor) => void
+  setMostrarVictoriaFrase: (mostrar: boolean) => void
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -131,6 +198,15 @@ export const useGameStore = create<GameState>((set, get) => ({
   mostrarEstadisticas: false,
   mostrarAyuda: false,
   mostrarVictoria: false,
+
+  fraseDelDia: null,
+  frasePartida: cargarFrasePartida(),
+  fraseAdivinado: false,
+  fraseCargando: false,
+  fraseError: null,
+  contadorAciertos: obtenerContadorAciertos(),
+  profesorAyer: null,
+  mostrarVictoriaFrase: false,
 
   iniciarPartida: async () => {
     set({ cargando: true, error: null })
@@ -310,4 +386,106 @@ export const useGameStore = create<GameState>((set, get) => ({
   setMostrarEstadisticas: (mostrar) => set({ mostrarEstadisticas: mostrar }),
   setMostrarAyuda: (mostrar) => set({ mostrarAyuda: mostrar }),
   setModoJuego: (modo) => set({ modoJuego: modo }),
+
+  iniciarFrasePartida: async () => {
+    set({ fraseCargando: true, fraseError: null })
+    try {
+      const fecha = obtenerFechaKey()
+      const partidaExistente = get().frasePartida
+
+      if (partidaExistente && partidaExistente.fecha === fecha) {
+        const frase = await obtenerFrase(partidaExistente.fraseId)
+        if (frase) {
+          set({
+            fraseDelDia: frase,
+            fraseAdivinado: partidaExistente.adivinado,
+            contadorAciertos: obtenerContadorAciertos(),
+            fraseCargando: false,
+            mostrarVictoriaFrase: false,
+          })
+          return
+        }
+      }
+
+      const frase = await obtenerFraseDelDia(fecha)
+      if (!frase) {
+        set({ fraseError: 'No hay frases disponibles', fraseCargando: false })
+        return
+      }
+
+      const nuevaPartida: FrasePartida = {
+        fecha,
+        fraseId: frase.id,
+        profesorId: frase.profesor.id,
+        adivinado: false,
+        intentos: 0,
+        tiempoInicio: Date.now(),
+      }
+
+      guardarFrasePartida(nuevaPartida)
+
+      const fraseAyer = await obtenerFraseDelDiaAnterior(fecha)
+
+      set({
+        fraseDelDia: frase,
+        frasePartida: nuevaPartida,
+        fraseAdivinado: false,
+        contadorAciertos: obtenerContadorAciertos(),
+        profesorAyer: fraseAyer?.profesor || null,
+        fraseCargando: false,
+        mostrarVictoriaFrase: false,
+      })
+    } catch (err) {
+      set({ fraseError: err instanceof Error ? err.message : 'Error al cargar la frase', fraseCargando: false })
+    }
+  },
+
+  realizarIntentoFrase: (profesor: Profesor) => {
+    const { fraseDelDia, frasePartida, estadisticas } = get()
+    if (!fraseDelDia || !frasePartida || frasePartida.adivinado) return
+
+    const esCorrecto = profesor.id === fraseDelDia.profesor.id
+    const nuevosIntentos = frasePartida.intentos + 1
+
+    const partidaActualizada: FrasePartida = {
+      ...frasePartida,
+      intentos: nuevosIntentos,
+      adivinado: esCorrecto,
+      tiempoFin: esCorrecto ? Date.now() : undefined,
+    }
+
+    guardarFrasePartida(partidaActualizada)
+
+    if (esCorrecto) {
+      const nuevasEstadisticas: Estadisticas = {
+        ...estadisticas,
+        partidasJugadas: estadisticas.partidasJugadas + 1,
+        partidasGanadas: estadisticas.partidasGanadas + 1,
+        rachaActual: estadisticas.rachaActual + 1,
+        mejorRacha: Math.max(estadisticas.mejorRacha, estadisticas.rachaActual + 1),
+        distribucionIntentos: {
+          ...estadisticas.distribucionIntentos,
+          [nuevosIntentos]: (estadisticas.distribucionIntentos[nuevosIntentos] || 0) + 1,
+        },
+      }
+      guardarEstadisticas(nuevasEstadisticas)
+      set({ estadisticas: nuevasEstadisticas })
+
+      const nuevoContador = incrementarContadorAciertos()
+      set({ contadorAciertos: nuevoContador })
+    }
+
+    set({
+      frasePartida: partidaActualizada,
+      fraseAdivinado: esCorrecto,
+    })
+
+    if (esCorrecto) {
+      setTimeout(() => {
+        set({ mostrarVictoriaFrase: true })
+      }, 800)
+    }
+  },
+
+  setMostrarVictoriaFrase: (mostrar) => set({ mostrarVictoriaFrase: mostrar }),
 }))

@@ -6,23 +6,85 @@ import { BarraInfo } from '@/components/game/BarraInfo'
 import { PanelPistas } from '@/components/game/PanelPistas'
 import { BuscadorProfesores } from '@/components/game/BuscadorProfesores'
 import { TablaResultados } from '@/components/game/TablaResultados'
+import { FraseCard } from '@/components/game/FraseCard'
+import { FraseBuscador } from '@/components/game/FraseBuscador'
+import { ContadorAciertos } from '@/components/game/ContadorAciertos'
+import { ProfesorAyer } from '@/components/game/ProfesorAyer'
 import { ModalEstadisticas } from '@/components/game/ModalEstadisticas'
 import { ModalAyuda } from '@/components/game/ModalAyuda'
 import { ModalVictoria } from '@/components/game/ModalVictoria'
+import { ModalVictoriaFrase } from '@/components/game/ModalVictoriaFrase'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
+function ModoClasico() {
+  return (
+    <>
+      <PanelPistas />
+      <BuscadorProfesores />
+      <TablaResultados />
+      <ContadorAciertos />
+      <ModalVictoria />
+    </>
+  )
+}
+
+function ModoFrase() {
+  const fraseDelDia = useGameStore((s) => s.fraseDelDia)
+  const fraseCargando = useGameStore((s) => s.fraseCargando)
+  const fraseError = useGameStore((s) => s.fraseError)
+  const iniciarFrasePartida = useGameStore((s) => s.iniciarFrasePartida)
+
+  if (fraseCargando) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <LoadingSpinner size="lg" text="Cargando frase..." />
+      </div>
+    )
+  }
+
+  if (fraseError) {
+    return (
+      <div className="flex-1 flex items-center justify-center px-4">
+        <div className="text-center glass-panel p-8 max-w-md">
+          <p className="text-red-400 mb-4">{fraseError}</p>
+          <button onClick={iniciarFrasePartida} className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900">
+            Reintentar
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (!fraseDelDia) return null
+
+  return (
+    <>
+      <FraseCard frase={fraseDelDia} />
+      <FraseBuscador />
+      <ContadorAciertos />
+      <ProfesorAyer />
+      <ModalVictoriaFrase />
+    </>
+  )
+}
+
 export function GamePage() {
-  const { iniciarPartida, cargando, error } = useGameStore()
+  const modoJuego = useGameStore((s) => s.modoJuego)
+  const iniciarPartida = useGameStore((s) => s.iniciarPartida)
+  const iniciarFrasePartida = useGameStore((s) => s.iniciarFrasePartida)
+  const cargando = useGameStore((s) => s.cargando)
+  const error = useGameStore((s) => s.error)
 
   useEffect(() => {
-    iniciarPartida()
-  }, [iniciarPartida])
+    if (modoJuego === 'clasico') iniciarPartida()
+    else if (modoJuego === 'frase') iniciarFrasePartida()
+  }, [modoJuego, iniciarPartida, iniciarFrasePartida])
 
   const fondo = (
     <div className="fixed inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/fondo.jpg)' }} />
   )
 
-  if (cargando) {
+  if (modoJuego === 'clasico' && cargando) {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         {fondo}
@@ -34,7 +96,7 @@ export function GamePage() {
     )
   }
 
-  if (error) {
+  if (modoJuego === 'clasico' && error) {
     return (
       <div className="min-h-screen flex items-center justify-center relative">
         {fondo}
@@ -57,12 +119,12 @@ export function GamePage() {
         <TopBar />
         <ModosJuego />
         <BarraInfo />
-        <PanelPistas />
-        <BuscadorProfesores />
-        <TablaResultados />
+
+        {modoJuego === 'clasico' && <ModoClasico />}
+        {modoJuego === 'frase' && <ModoFrase />}
+
         <ModalEstadisticas />
         <ModalAyuda />
-        <ModalVictoria />
       </div>
     </div>
   )
