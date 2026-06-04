@@ -46,7 +46,7 @@ export function FotoCard() {
             }}
           >
             <motion.img
-              src={fotoPartida.fotoUrl}
+              src={fotoPartida.fotoUrl || fotoPartida.pistaUrl}
               alt="Foto del profesor"
               className="w-full h-full object-cover"
               style={{

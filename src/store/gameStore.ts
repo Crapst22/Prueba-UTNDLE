@@ -634,9 +634,15 @@ export const useGameStore = create<GameState>((set, get) => ({
             obtenerContadorDB(fecha, 'foto'),
             obtenerProfesorDiario(obtenerFechaAnteriorKey(), 'foto').catch(() => null),
           ])
+          const fotoPartidaActualizada: FotoPartida = {
+            ...partidaExistente,
+            fotoUrl: profesor.foto_url,
+            pistaUrl: profesor.imagen_pista_url || profesor.foto_url,
+          }
+          guardarFotoPartida(fotoPartidaActualizada)
           set({
             fotoProfesor: profesor,
-            fotoPartida: partidaExistente,
+            fotoPartida: fotoPartidaActualizada,
             contadorAciertosFoto: contador,
             profesorAyerFoto: partidaExistente.adivinado ? profesor : profesorAyer,
             fotoCargando: false,
