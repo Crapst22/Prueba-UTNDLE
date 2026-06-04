@@ -14,7 +14,6 @@ import { ProfesorAyer } from '@/components/game/ProfesorAyer'
 import { ModalEstadisticas } from '@/components/game/ModalEstadisticas'
 import { ModalAyuda } from '@/components/game/ModalAyuda'
 import { ModalVictoria } from '@/components/game/ModalVictoria'
-import { ModalVictoriaFrase } from '@/components/game/ModalVictoriaFrase'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 function ModoClasico() {
@@ -72,7 +71,6 @@ function ModoFrase() {
       <FraseResultados />
       <ContadorAciertos />
       <ProfesorAyer />
-      <ModalVictoriaFrase />
     </>
   )
 }

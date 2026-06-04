@@ -5,12 +5,12 @@ import { Modal } from '@/components/ui/Modal'
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 
 export function ModalVictoriaFrase() {
-  const { frasePartida, fraseDelDia, mostrarVictoriaFrase, setMostrarVictoriaFrase } = useGameStore()
+  const { frasePartida, fraseDelDia } = useGameStore()
   const [cerrado, setCerrado] = useState(false)
 
   if (!frasePartida || !fraseDelDia) return null
 
-  const abierto = mostrarVictoriaFrase && !cerrado
+  const abierto = frasePartida.adivinado && !cerrado
   const profesor = fraseDelDia.profesor
   const tiempo = frasePartida.tiempoFin ? Math.floor((frasePartida.tiempoFin - frasePartida.tiempoInicio) / 1000) : 0
   const minutos = Math.floor(tiempo / 60)
@@ -29,12 +29,12 @@ export function ModalVictoriaFrase() {
   return (
     <Modal
       isOpen={abierto}
-      onClose={() => { setCerrado(true); setMostrarVictoriaFrase(false) }}
+      onClose={() => setCerrado(true)}
       size="sm"
     >
       <div className="text-center relative">
         <button
-          onClick={() => { setCerrado(true); setMostrarVictoriaFrase(false) }}
+          onClick={() => setCerrado(true)}
           className="absolute -top-1 -right-1 text-white/40 hover:text-white transition-colors p-1"
           aria-label="Cerrar"
         >

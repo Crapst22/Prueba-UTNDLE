@@ -5,9 +5,11 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 export function FraseResultados() {
   const frasePartida = useGameStore((s) => s.frasePartida)
 
-  if (!frasePartida?.intentosList?.length) return null
+  if (!frasePartida) return null
 
   const intentos = [...frasePartida.intentosList].reverse()
+
+  if (intentos.length === 0) return null
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-5">
@@ -45,6 +47,24 @@ export function FraseResultados() {
             </motion.div>
           ))}
         </div>
+
+        {frasePartida.adivinado && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-6 p-5 rounded-2xl text-center"
+            style={{
+              background: 'linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))',
+              border: '1px solid rgba(34,197,94,0.3)',
+              boxShadow: '0 0 30px rgba(34,197,94,0.15)',
+            }}
+          >
+            <p className="text-[#22c55e] font-black text-xl">¡Felicitaciones!</p>
+            <p className="text-[#22c55e]/70 text-sm mt-1">
+              Adivinaste la frase en {frasePartida.intentos} {frasePartida.intentos === 1 ? 'intento' : 'intentos'}
+            </p>
+          </motion.div>
+        )}
       </div>
     </div>
   )

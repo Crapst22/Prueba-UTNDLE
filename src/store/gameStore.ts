@@ -460,7 +460,6 @@ export const useGameStore = create<GameState>((set, get) => ({
         contadorAciertosFrase: contador,
         profesorAyerFrase: profesorAyer,
         fraseCargando: false,
-        mostrarVictoriaFrase: false,
       })
     } catch (err) {
       set({ fraseError: err instanceof Error ? err.message : 'Error al cargar la frase', fraseCargando: false })
