@@ -123,7 +123,7 @@ export function AdminConfiguracion() {
       <header className="relative z-40 border-b border-dark-700/50 bg-dark-900/80 backdrop-blur-md sticky top-0">
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <a href="/admin" className="text-sm text-dark-400 hover:text-primary-400 transition-colors whitespace-nowrap">
+            <a href="/admin" className="text-sm text-dark-400 hover:text-yellow-400 transition-colors whitespace-nowrap">
               ← Volver
             </a>
             <h1 className="text-base sm:text-lg font-bold gradient-text truncate">Configuración</h1>

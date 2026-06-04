@@ -12,8 +12,9 @@ import {
   obtenerCatedras,
   STORAGE_BUCKETS,
 } from '@/services/profesores'
+import { crearFrase, actualizarFrase, obtenerFrases } from '@/services/frases'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
-import type { Presencialidad, Catedra } from '@/types'
+import type { Presencialidad, Catedra, FraseConProfesor } from '@/types'
 
 interface ProfesorFormValues {
   nombre: string
@@ -37,6 +38,8 @@ export function AdminProfesorForm() {
   const [fotoFile, setFotoFile] = useState<File | null>(null)
   const [audioFile, setAudioFile] = useState<File | null>(null)
   const [imagenPistaFile, setImagenPistaFile] = useState<File | null>(null)
+  const [fraseTexto, setFraseTexto] = useState('')
+  const [fraseExistente, setFraseExistente] = useState<FraseConProfesor | null>(null)
   const [fotoPreview, setFotoPreview] = useState<string | null>(null)
   const [audioPreview, setAudioPreview] = useState<string | null>(null)
   const [imagenPistaPreview, setImagenPistaPreview] = useState<string | null>(null)
@@ -92,6 +95,13 @@ export function AdminProfesorForm() {
             setFotoPreview(profesor.foto_url)
             setAudioPreview(profesor.audio_pista_url)
             setImagenPistaPreview(profesor.imagen_pista_url)
+
+            const frases = await obtenerFrases()
+            const fraseProf = frases.find((f) => f.profesor.id === id)
+            if (fraseProf) {
+              setFraseExistente(fraseProf)
+              setFraseTexto(fraseProf.texto)
+            }
           }
         }
       } catch (err) {
@@ -153,6 +163,8 @@ export function AdminProfesorForm() {
         )
       }
 
+      let profesorId = id || ''
+
       if (isEditing && id) {
         await actualizarProfesor(id, {
           nombre: data.nombre,
@@ -166,7 +178,7 @@ export function AdminProfesorForm() {
           catedra_ids: data.catedra_ids,
         })
       } else {
-        await crearProfesor({
+        const nuevo = await crearProfesor({
           nombre: data.nombre,
           foto_url,
           audio_pista_url,
@@ -177,6 +189,15 @@ export function AdminProfesorForm() {
           presencialidad_ids: data.presencialidad_ids,
           catedra_ids: data.catedra_ids,
         })
+        profesorId = nuevo.id
+      }
+
+      if (fraseTexto.trim()) {
+        if (fraseExistente) {
+          await actualizarFrase(fraseExistente.id, fraseTexto.trim())
+        } else {
+          await crearFrase(profesorId, fraseTexto.trim())
+        }
       }
 
       navigate('/admin')
@@ -206,7 +227,7 @@ export function AdminProfesorForm() {
       <header className="relative z-40 border-b border-dark-700/50 bg-dark-900/80 backdrop-blur-md sticky top-0">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <a href="/admin" className="text-sm text-dark-400 hover:text-primary-400 transition-colors whitespace-nowrap">
+            <a href="/admin" className="text-sm text-dark-400 hover:text-yellow-400 transition-colors whitespace-nowrap">
               ← Volver
             </a>
             <h1 className="text-base sm:text-lg font-bold gradient-text truncate">
@@ -287,7 +308,7 @@ export function AdminProfesorForm() {
                   className="sr-only peer"
                   {...register('jefe_catedra')}
                 />
-                <div className="w-11 h-6 bg-dark-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600" />
+                <div className="w-11 h-6 bg-dark-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-500" />
                 <span className="ms-2 text-xs text-dark-400">Sí / No</span>
               </label>
             </div>
@@ -302,7 +323,7 @@ export function AdminProfesorForm() {
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleFileChange(e.target.files?.[0] || null, setFotoFile, setFotoPreview)}
-                className="input w-full text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-primary-600 file:text-white file:text-xs file:font-medium"
+                className="input w-full text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-yellow-500 file:text-dark-900 file:text-xs file:font-medium file:font-bold"
               />
               {fotoPreview && (
                 <img src={fotoPreview} alt="Preview" className="w-20 h-20 rounded-full object-cover mt-2" />
@@ -315,7 +336,7 @@ export function AdminProfesorForm() {
                 type="file"
                 accept="audio/*"
                 onChange={(e) => handleFileChange(e.target.files?.[0] || null, setAudioFile, setAudioPreview)}
-                className="input w-full text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-primary-600 file:text-white file:text-xs file:font-medium"
+                className="input w-full text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-yellow-500 file:text-dark-900 file:text-xs file:font-medium file:font-bold"
               />
               {audioPreview && (
                 <audio controls src={audioPreview} className="mt-2 w-full max-w-xs h-8" />
@@ -328,11 +349,31 @@ export function AdminProfesorForm() {
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleFileChange(e.target.files?.[0] || null, setImagenPistaFile, setImagenPistaPreview)}
-                className="input w-full text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-primary-600 file:text-white file:text-xs file:font-medium"
+                className="input w-full text-sm file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-yellow-500 file:text-dark-900 file:text-xs file:font-medium file:font-bold"
               />
               {imagenPistaPreview && (
                 <img src={imagenPistaPreview} alt="Preview pista" className="w-20 h-20 object-cover rounded-lg mt-2" />
               )}
+            </div>
+          </div>
+
+          <div className="card p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-dark-300 uppercase tracking-wider">Frase</h2>
+            <div>
+              <label className="block text-sm font-medium text-dark-300 mb-1">
+                Frase destacada <span className="text-dark-500 font-normal">(opcional)</span>
+              </label>
+              <textarea
+                value={fraseTexto}
+                onChange={(e) => setFraseTexto(e.target.value)}
+                placeholder="Ej: La programación es aprender a resolver problemas."
+                rows={3}
+                className="input w-full resize-none"
+                style={{ borderRadius: '0.75rem' }}
+              />
+              <p className="text-xs text-dark-500 mt-1">
+                Esta frase se mostrará en el modo Frase. Los estudiantes deberán adivinar qué profesor la dijo.
+              </p>
             </div>
           </div>
 
@@ -360,7 +401,7 @@ export function AdminProfesorForm() {
                         }}
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                           (field.value || []).includes(pres.id)
-                            ? 'bg-primary-600 text-white'
+                            ? 'bg-yellow-500 text-dark-900 font-bold'
                             : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
                         }`}
                       >
@@ -396,7 +437,7 @@ export function AdminProfesorForm() {
                         }}
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                           (field.value || []).includes(cat.id)
-                            ? 'bg-primary-600 text-white'
+                            ? 'bg-yellow-500 text-dark-900 font-bold'
                             : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
                         }`}
                       >

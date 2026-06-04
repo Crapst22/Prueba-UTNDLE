@@ -82,7 +82,7 @@ export function AdminDashboard() {
       <header className="relative z-40 border-b border-dark-700/50 bg-dark-900/80 backdrop-blur-md sticky top-0">
         <div className="max-w-6xl mx-auto px-2 sm:px-4 h-auto min-h-14 py-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-3">
-            <a href="/" className="text-sm text-dark-400 hover:text-primary-400 transition-colors whitespace-nowrap">
+            <a href="/" className="text-sm text-dark-400 hover:text-yellow-400 transition-colors whitespace-nowrap">
               ← Juego
             </a>
             <h1 className="text-lg font-bold gradient-text">Admin</h1>
