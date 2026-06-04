@@ -233,9 +233,11 @@ export function AdminConfiguracion() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => {
-                    const { reiniciarPartida, iniciarPartida } = useGameStore.getState()
+                    const { reiniciarPartida, iniciarPartida, setModoJuego } = useGameStore.getState()
                     reiniciarPartida()
                     iniciarPartida()
+                    setModoJuego('clasico')
+                    navigate('/')
                   }}
                   className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900"
                 >
@@ -243,8 +245,10 @@ export function AdminConfiguracion() {
                 </button>
                 <button
                   onClick={async () => {
-                    const { cambiarProfesorDelDia } = useGameStore.getState()
+                    const { cambiarProfesorDelDia, setModoJuego } = useGameStore.getState()
                     await cambiarProfesorDelDia()
+                    setModoJuego('clasico')
+                    navigate('/')
                   }}
                   className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900"
                 >
@@ -258,9 +262,11 @@ export function AdminConfiguracion() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => {
-                    const { reiniciarFrasePartida, iniciarFrasePartida } = useGameStore.getState()
+                    const { reiniciarFrasePartida, iniciarFrasePartida, setModoJuego } = useGameStore.getState()
                     reiniciarFrasePartida()
                     iniciarFrasePartida()
+                    setModoJuego('frase')
+                    navigate('/')
                   }}
                   className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900"
                 >
@@ -268,8 +274,10 @@ export function AdminConfiguracion() {
                 </button>
                 <button
                   onClick={async () => {
-                    const { cambiarFraseDelDia } = useGameStore.getState()
+                    const { cambiarFraseDelDia, setModoJuego } = useGameStore.getState()
                     await cambiarFraseDelDia()
+                    setModoJuego('frase')
+                    navigate('/')
                   }}
                   className="gold-btn px-6 py-2 text-sm font-bold text-yellow-900"
                 >

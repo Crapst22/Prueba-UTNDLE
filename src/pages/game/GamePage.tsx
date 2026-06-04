@@ -67,11 +67,11 @@ function ModoFrase() {
 
   return (
     <>
-      <ProfesorAyer />
       <FraseCard frase={fraseDelDia} />
       <FraseBuscador />
       <FraseResultados />
       <ContadorAciertos />
+      <ProfesorAyer />
       <ModalVictoriaFrase />
     </>
   )
