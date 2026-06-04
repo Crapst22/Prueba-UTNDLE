@@ -5,7 +5,7 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback'
 export function FraseResultados() {
   const frasePartida = useGameStore((s) => s.frasePartida)
 
-  if (!frasePartida || frasePartida.intentosList.length === 0) return null
+  if (!frasePartida?.intentosList?.length) return null
 
   return (
     <div className="px-4 max-w-4xl mx-auto w-full mt-5">

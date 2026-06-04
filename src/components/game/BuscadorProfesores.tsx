@@ -16,7 +16,7 @@ export function BuscadorProfesores() {
   const timeoutRef = useRef<number | undefined>(undefined)
   const { realizarIntento, partida } = useGameStore()
 
-  const deshabilitado = partida?.adivinado || (partida?.intentos.length || 0) >= 6
+  const deshabilitado = partida?.adivinado
 
   const buscar = useCallback(async (termino: string) => {
     if (termino.length < 1) {

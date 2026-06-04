@@ -293,20 +293,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       })
     }
 
-    if (nuevosIntentos.length >= 6 && !adivinado) {
-      const nuevasEstadisticas: Estadisticas = {
-        ...estadisticas,
-        partidasJugadas: estadisticas.partidasJugadas + 1,
-        rachaActual: 0,
-        distribucionIntentos: {
-          ...estadisticas.distribucionIntentos,
-          [0]: (estadisticas.distribucionIntentos[0] || 0) + 1,
-        },
-      }
-      guardarEstadisticas(nuevasEstadisticas)
-      set({ estadisticas: nuevasEstadisticas })
-    }
-
     set({
       partida: partidaActualizada,
       pistaAudioDesbloqueada: audioDesbloq,
